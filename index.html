@@ -27,13 +27,13 @@
   --display:'Unbounded','Arial Black',system-ui,sans-serif;
   --body:'Manrope',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
   color-scheme:light;
-  --on:#FFFFFF; --ink:#1A1F1B; --olive:#A0B672;
+  --on:#FFFFFF; --mline:#8E9A84; --ink:#1A1F1B; --olive:#A0B672;
 }
 :root[data-theme="dark"]{
   --bg:#0F1A14; --surface:#16241C; --surface2:#1F3328; --line:#2D4838;
   --fg:#F3EFDF; --dim:#9DB3A5;
   --accent:#7CC79A; --pink:#E39A6E; --good:#7CC79A; --warn:#E3B04B; --violet:#7CC79A;
-  --sil:#2A3E31; --off:#3A5646; --on:#0B140F; --ink:#D5E0D2; --olive:#7E9A55;
+  --sil:#2A3E31; --off:#3A5646; --on:#0B140F; --mline:#1B2A20; --ink:#D5E0D2; --olive:#7E9A55;
   color-scheme:dark;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -330,27 +330,6 @@ const LV={'Лёгкий':'#3F8A57','Средний':'#9A6B12','Сложный':'
 const REST_MET=1.5;
 
 /* ---------- тело: фигуры мышц (центр x=100) ---------- */
-function mir(s){const[k,c]=s;if(k==='poly')return[k,c.map(([x,y])=>[200-x,y])];const[x0,y0,x1,y1]=c;return[k,[200-x1,y0,200-x0,y1]]}
-function sym(k,c){const s=[k,c];return[s,mir(s)]}
-const FRONT={
- shoulders:sym('oval',[56,56,82,86]),
- chest:sym('poly',[[84,62],[99,64],[99,94],[88,93],[80,80]]),
- biceps:sym('oval',[41,86,61,124]),
- forearms:sym('oval',[35,128,55,176]),
- abs:[0,1,2,3].flatMap(r=>sym('rect',[91,100+r*15,99,112+r*15])),
- obliques:sym('poly',[[77,100],[88,102],[88,156],[80,150]]),
- quads:sym('oval',[75,166,98,254]),
- calves:sym('oval',[75,266,95,328])};
-const BACK={
- traps:[['poly',[[88,50],[112,50],[125,70],[100,97],[75,70]]]],
- shoulders:sym('oval',[56,56,82,86]),
- lats:sym('poly',[[78,76],[98,98],[98,138],[84,132],[76,100]]),
- lower_back:[['poly',[[88,140],[112,140],[115,162],[85,162]]]],
- triceps:sym('oval',[41,86,61,124]),
- forearms:sym('oval',[35,128,55,176]),
- glutes:sym('oval',[74,164,99,202]),
- hamstrings:sym('oval',[75,206,98,258]),
- calves:sym('oval',[75,266,95,328])};
 let SIL='#E7E0CA', OFF='#D3DCC4',THEME='light';
 const THEMES={light:{sil:'#E7E0CA',off:'#D3DCC4',meta:'#FBF7EC'},dark:{sil:'#2A3E31',off:'#3A5646',meta:'#0F1A14'}};
 const LV0=Object.assign({},LV);
@@ -364,27 +343,42 @@ function applyTheme(t){
 }
 function hex(c){return[1,3,5].map(i=>parseInt(c.substr(i,2),16))}
 function blend(a,b,t){const x=hex(a),y=hex(b);return'#'+x.map((v,i)=>Math.round(v+(y[i]-v)*t).toString(16).padStart(2,'0')).join('')}
+/* ---------- анатомичная фигура: фото-основа + красная подсветка мышц ---------- */
+const AF={ // вид спереди (центр x=162), левая половина; координаты в системе 670x740
+ shoulders:['M88,148 L55,150 L50,185 L60,205 L85,200 L92,175Z'],
+ chest:['M162,160 L120,145 L88,152 L80,185 L95,215 L125,228 L162,215Z'],
+ biceps:['M50,200 L85,200 L90,240 L80,280 L55,285 L48,250Z'],
+ forearms:['M45,295 L78,290 L70,350 L45,375 L30,370 L35,330Z'],
+ obliques:['M105,235 L130,235 L130,320 L108,330 L100,285Z'],
+ quads:['M100,380 L150,375 L150,470 L130,530 L95,520 L75,450Z'],
+ calves:['M85,560 L125,555 L120,640 L100,690 L85,640Z']};
+const AFC=['M130,225 L194,225 L192,305 L132,305Z']; // пресс (центр)
+const AB={ // вид сзади (центр x=507)
+ traps:['M510,75 L470,115 L445,145 L470,165 L510,240Z'],
+ shoulders:['M400,150 L445,142 L437,190 L415,197 L397,180Z'],
+ lats:['M440,195 L485,220 L507,250 L507,300 L470,300 L450,265Z'],
+ triceps:['M402,200 L437,197 L437,235 L417,280 L395,285 L392,240Z'],
+ forearms:['M375,295 L415,292 L410,350 L390,380 L372,370 L370,325Z'],
+ lower_back:['M485,285 L510,285 L510,345 L495,335 L485,310Z'],
+ glutes:['M452,350 L507,355 L510,400 L470,410 L450,390Z'],
+ hamstrings:['M445,415 L500,410 L497,495 L470,540 L437,500Z'],
+ calves:['M417,565 L462,560 L465,615 L447,665 L422,665 L412,610Z']};
+function sm(d){const p=d.match(/-?\d+(\.\d+)?/g).map(Number),n=p.length/2,P=i=>[p[2*((i+n)%n)],p[2*((i+n)%n)+1]];
+  let o='';for(let i=0;i<n;i++){const a=P(i),b=P(i+1),m=[(a[0]+b[0])/2,(a[1]+b[1])/2];o+=(i?`Q${a[0]},${a[1]} ${m[0]},${m[1]}`:`M${m[0]},${m[1]}`)}
+  const a=P(0),b=P(1);return o+`Q${a[0]},${a[1]} ${(a[0]+b[0])/2},${(a[1]+b[1])/2}Z`}
 function body(inten,color,labels){
-  let o=`<svg class="body" viewBox="0 0 400 ${labels?368:346}" role="img" aria-label="Схема мышц, вид спереди и сзади">`;
-  [[0,FRONT,'СПЕРЕДИ'],[200,BACK,'СЗАДИ']].forEach(([ox,sh,lab])=>{
-    const LW=3.4,LIMBS=[['54,70 47,118 43,176',24],['146,70 153,118 157,176',24],['86,162 85,250 85,332',28],['114,162 115,250 115,332',28]];
-    o+=`<g transform="translate(${ox} 0)"><g style="fill:var(--ink);stroke:var(--ink);stroke-linejoin:round;stroke-linecap:round"><ellipse cx="100" cy="23" rx="13" ry="17" stroke-width="${LW}"/><rect x="94" y="36" width="12" height="20" stroke-width="${LW}"/>`;
-    o+=`<polygon points="64,60 136,60 130,104 127,164 73,164 70,104" stroke-width="${10+LW}"/>`;
-    LIMBS.forEach(([p,w])=>{o+=`<polyline points="${p}" fill="none" stroke-width="${w+LW}"/>`});
-    o+=`</g><g style="fill:var(--sil);stroke:var(--sil);stroke-linejoin:round;stroke-linecap:round"><ellipse cx="100" cy="23" rx="13" ry="17" stroke="none"/><rect x="94" y="36" width="12" height="20" stroke="none"/>`;
-    o+=`<polygon points="64,60 136,60 130,104 127,164 73,164 70,104" stroke-width="10"/>`;
-    LIMBS.forEach(([p,w])=>{o+=`<polyline points="${p}" fill="none" stroke-width="${w}"/>`});
-    o+='</g>';
-    for(const m in sh){
-      const k=inten[m]||0, fill=k>0?blend(OFF,color,.35+.65*k):OFF;
-      sh[m].forEach(([kind,c])=>{
-        if(kind==='poly')o+=`<polygon points="${c.map(p=>p.join(',')).join(' ')}" fill="${fill}" stroke="${fill}" stroke-width="5" stroke-linejoin="round"/>`;
-        else{const[x0,y0,x1,y1]=c;
-          o+=kind==='oval'?`<ellipse cx="${(x0+x1)/2}" cy="${(y0+y1)/2}" rx="${(x1-x0)/2}" ry="${(y1-y0)/2}" fill="${fill}"/>`
-                          :`<rect x="${x0}" y="${y0}" width="${x1-x0}" height="${y1-y0}" rx="2.5" fill="${fill}"/>`}
-      })}
-    if(labels)o+=`<text x="100" y="358" text-anchor="middle">${lab}</text>`;
-    o+='</g>'});
+  const SM=true;
+  const RED=THEME==='dark'?'#FF3B4E':'#FF2438';
+  const mir=(c)=>`transform="matrix(-1 0 0 1 ${2*c} 0)"`;
+  let o=`<svg class="body" viewBox="0 0 670 ${labels?772:740}" role="img" aria-label="Схема мышц, вид спереди и сзади"><defs><clipPath id="ac"><rect width="670" height="740" rx="26"/></clipPath><filter id="ab" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="3"/></filter></defs>`;
+  o+=`<g clip-path="url(#ac)"><image href="anatomy.webp" width="670" height="740" preserveAspectRatio="none"/><g filter="url(#ab)" style="mix-blend-mode:screen">`;
+  const put=(sh,c,extra)=>{for(const m in sh){const k=inten[m]||0;if(k<=0)continue;
+    const op=(.38+.5*k).toFixed(2);
+    sh[m].forEach(d0=>{const d=sm(d0);o+=`<path d="${d}" fill="${RED}" opacity="${op}"/>`;if(c)o+=`<path d="${d}" ${mir(c)} fill="${RED}" opacity="${op}"/>`})}};
+  put(AF,162);put(AB,507);
+  if((inten.abs||0)>0)AFC.forEach(d=>o+=`<path d="${sm(d)}" fill="${RED}" opacity="${(.38+.5*inten.abs).toFixed(2)}"/>`);
+  o+=`</g></g>`;
+  if(labels)o+=`<text x="162" y="764" text-anchor="middle" style="font-size:20px">СПЕРЕДИ</text><text x="507" y="764" text-anchor="middle" style="font-size:20px">СЗАДИ</text>`;
   return o+'</svg>';
 }
 

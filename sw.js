@@ -1,5 +1,5 @@
-const CACHE = "skill-fitness-v3";
-const CORE = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png"];
+const CACHE = "skill-fitness-v5";
+const CORE = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png", "./anatomy.webp"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
