@@ -654,8 +654,8 @@ function openOnb(){
   const p=S.profile||{},el=$('#onb');
   const sx=(v,t)=>`<label><input type="radio" name="f-sex" value="${v}" ${p.sex===v?'checked':''}><span>${t}</span></label>`;
   const gl=(v,t)=>`<label><input type="radio" name="f-goal" value="${v}" ${p.goal===v?'checked':''}><span>${t}</span></label>`;
-  el.innerHTML=`<div class="wrap"><div class="onb-top"><span class="eyebrow">Анкета</span><button class="onb-skip" data-action="onbSkip">Пропустить</button></div>
-  <div class="onb-body"><header><h1 class="h1">Расскажи о себе</h1><p class="dim" style="margin-top:6px">Так калории будут считаться точнее. Данные хранятся только на этом устройстве.</p></header>
+  el.innerHTML=`<div class="wrap"><div class="onb-top"><span class="eyebrow">${p.height?'Мои данные':'Анкета'}</span><button class="onb-skip" data-action="onbSkip">Пропустить</button></div>
+  <div class="onb-body"><header><h1 class="h1">${p.height?'Твои данные':'Расскажи о себе'}</h1><p class="dim" style="margin-top:6px">${p.height?'Проверь данные и при необходимости измени их, потом нажми «Продолжить».':'Так калории будут считаться точнее.'} Данные хранятся только на этом устройстве.</p></header>
    <section class="panel"><div class="form">
     <div class="field"><label for="o-h">Рост, см</label><input class="inp" id="o-h" type="number" inputmode="numeric" min="100" max="250" step="1" placeholder="175" value="${p.height||''}"></div>
     <div class="field"><label for="o-w">Вес, кг</label><input class="inp" id="o-w" type="number" inputmode="decimal" min="25" max="300" step="0.5" placeholder="70" value="${p.weight||''}"></div>
@@ -835,7 +835,7 @@ const A={
   if(!(v>=25&&v<=300)){toast('Введи вес от 25 до 300 кг');return}
   S.weight=v;store.set('skill.weight',v);if(S.profile){S.profile.weight=v;store.set('skill.profile',S.profile)}toast('Вес сохранён, калории пересчитаны');render();
  },
- onbSkip(){store.set('skill.onb','skipped');closeOnb()},
+ onbSkip(){if(!store.get('skill.onb',null))store.set('skill.onb','skipped');closeOnb()},
  onbSave(){
   const num=id=>parseFloat(String($(id).value).replace(',','.'));
   const h=num('#o-h'),w=num('#o-w'),a=num('#o-a'),sex=(document.querySelector('input[name="f-sex"]:checked')||{}).value;
@@ -873,10 +873,11 @@ document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.tar
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.timer&&S.timer.running)takeWake()});
 applyTheme(store.get('skill.theme','light'));
 render();
-if(!store.get('skill.onb',null))openOnb();
+/* после заставки всегда открываем окно с данными (заполнено сохранёнными значениями) */
+if(document.getElementById('splash'))document.addEventListener('splashdone',openOnb,{once:true});else openOnb();
 })();
 </script>
-<script>(function(){var s=document.getElementById('splash');if(!s)return;var done=false;function hide(){if(done)return;done=true;s.classList.add('out');setTimeout(function(){s.remove()},700)}
+<script>(function(){var s=document.getElementById('splash');if(!s)return;var done=false;function hide(){if(done)return;done=true;s.classList.add('out');document.dispatchEvent(new Event('splashdone'));setTimeout(function(){s.remove()},700)}
 s.addEventListener('click',hide);document.addEventListener('keydown',hide,{once:true});setTimeout(hide,2800)})()</script>
 <script>if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}</script>
 </body>
