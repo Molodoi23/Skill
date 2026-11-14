@@ -1,4 +1,4 @@
-const CACHE = "skill-fitness-v11";
+const CACHE = "skill-fitness-v12";
 const CORE = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png", "./anatomy.webp"];
 
 self.addEventListener("install", e => {
