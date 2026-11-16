@@ -1,4 +1,4 @@
-const CACHE = "skill-fitness-v12";
+const CACHE = "skill-fitness-v13";
 const CORE = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png", "./anatomy.webp"];
 
 self.addEventListener("install", e => {
@@ -20,4 +20,11 @@ self.addEventListener("fetch", e => {
       return res;
     }).catch(() => caches.match("./index.html")))
   );
+});
+self.addEventListener("notificationclick", e => {
+  e.notification.close();
+  e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(cs => {
+    for (const c of cs) { if ("focus" in c) return c.focus(); }
+    return self.clients.openWindow("./index.html");
+  }));
 });

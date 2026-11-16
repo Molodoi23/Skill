@@ -1,14 +1,14 @@
 {
   "name": "SKILL Fitness",
   "short_name": "SKILL",
-  "description": "Тренировки, таймер, калории и схема мышц",
+  "description": "Тренировки, таймер, питание, вода, прогресс и схема мышц",
   "lang": "ru",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#FBF7EC",
-  "theme_color": "#FBF7EC",
+  "background_color": "#060E10",
+  "theme_color": "#060E10",
   "icons": [
     {
       "src": "icon-192.png",

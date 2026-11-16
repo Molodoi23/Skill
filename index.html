@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>SKILL Fitness</title>
-<meta name="theme-color" content="#FBF7EC">
+<meta name="theme-color" content="#060E10">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -20,20 +20,24 @@
 /* Layout: one phone-width column, bottom tab bar, full-screen sheets for workout details and the timer.
    Look: deep navy, cyan for action, pink for emphasis. Muscles glow in each workout's own colour. */
 :root{
-  --bg:#FBF7EC; --surface:#FFFEF9; --surface2:#F3EBD7; --line:#E3DCC4;
-  --fg:#1F3A2B; --dim:#5C7266;
-  --accent:#3A7350; --pink:#B85C30; --good:#4E8F5E; --warn:#9A6B12; --violet:#3A7350;
-  --sil:#E7E0CA; --off:#D3DCC4;
+  --bg:#F2F7F4; --surface:rgba(255,255,255,.84); --surface2:#E8F0EC; --line:#D3E1D9;
+  --fg:#0D2A21; --dim:#5A7268;
+  --accent:#16A34A; --pink:#E0592A; --good:#16A34A; --warn:#B7791F; --violet:#16A34A; --accent2:#0E8BD6;
+  --sil:#E7E0CA; --off:#CBD8D0;
   --display:'Unbounded','Arial Black',system-ui,sans-serif;
   --body:'Manrope',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
   color-scheme:light;
-  --on:#FFFFFF; --mline:#8E9A84; --ink:#1A1F1B; --olive:#A0B672;
+  --on:#FFFFFF; --mline:#8E9A84; --ink:#1A1F1B; --olive:#7FB4D4;
+  --glow:radial-gradient(70vmax 50vmax at 100% -10%,color-mix(in srgb,var(--accent2) 14%,transparent),transparent 60%),radial-gradient(60vmax 45vmax at -20% 8%,color-mix(in srgb,var(--accent) 10%,transparent),transparent 60%);
+  --shadow:0 10px 30px -14px rgba(13,42,33,.28);
 }
 :root[data-theme="dark"]{
-  --bg:#0F1A14; --surface:#16241C; --surface2:#1F3328; --line:#2D4838;
-  --fg:#F3EFDF; --dim:#9DB3A5;
-  --accent:#7CC79A; --pink:#E39A6E; --good:#7CC79A; --warn:#E3B04B; --violet:#7CC79A;
-  --sil:#2A3E31; --off:#3A5646; --on:#0B140F; --mline:#1B2A20; --ink:#D5E0D2; --olive:#7E9A55;
+  --bg:#060E10; --surface:rgba(255,255,255,.055); --surface2:rgba(255,255,255,.09); --line:rgba(255,255,255,.11);
+  --fg:#EAF4EF; --dim:#8FA7A0;
+  --accent:#8DE04B; --pink:#FF8F6B; --good:#6BE08F; --warn:#FFC145; --violet:#8DE04B; --accent2:#2DB6F5;
+  --sil:#2A3E31; --off:rgba(255,255,255,.18); --on:#07140A; --mline:#1B2A20; --ink:#D5E0D2; --olive:#2A7FA8;
+  --glow:radial-gradient(70vmax 50vmax at 100% -10%,color-mix(in srgb,var(--accent2) 20%,transparent),transparent 60%),radial-gradient(60vmax 45vmax at -20% 8%,color-mix(in srgb,var(--accent) 14%,transparent),transparent 60%);
+  --shadow:inset 0 1px 0 rgba(255,255,255,.07),0 14px 34px -16px rgba(0,0,0,.7);
   color-scheme:dark;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -228,6 +232,78 @@ main>header{padding-right:56px}
 #splash p{margin:0;font-size:14px;color:#8fa59d;animation:spUp .7s .6s cubic-bezier(.2,.8,.2,1) both}
 @keyframes spIn{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:none}}
 @keyframes spUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+/* ===== v13: фирменный тёмный стиль (цвета логотипа), стекло, кольца, анимации ===== */
+body{background:transparent}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:var(--glow)}
+.overlay{background:var(--glow),var(--bg)}
+.panel,.strip,.wcard,.mini,.tile,.seg,.chip,.ach{-webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%)}
+.panel,.strip,.wcard{box-shadow:var(--shadow)}
+.panel{border-radius:26px}
+nav{background:color-mix(in srgb,var(--bg) 72%,transparent);-webkit-backdrop-filter:blur(22px) saturate(160%);backdrop-filter:blur(22px) saturate(160%)}
+nav button{position:relative}
+nav button[aria-current="page"]::before{content:"";position:absolute;top:1px;width:24px;height:3px;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));box-shadow:0 0 14px var(--accent)}
+nav button[aria-current="page"]{color:var(--fg)}
+nav button[aria-current="page"] svg{stroke:var(--accent)}
+.btn.primary{background:var(--c,linear-gradient(135deg,var(--accent),var(--accent2)));box-shadow:0 10px 26px -10px color-mix(in srgb,var(--c,var(--accent)) 75%,transparent)}
+.btn,.chip,.wcard,.mini,.icon-btn,.seg button,.rings button{transition:transform .16s,background .2s,box-shadow .2s,opacity .2s}
+.wcard:active,.mini:active,.rings button:active{transform:scale(.985)}
+main>header .h1{background:linear-gradient(90deg,var(--fg) 60%,color-mix(in srgb,var(--fg) 55%,var(--accent2)));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.overlay:not([hidden]){animation:ovIn .38s cubic-bezier(.2,.8,.2,1)}
+@keyframes ovIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+main.anim>*{animation:rise .6s cubic-bezier(.2,.8,.2,1) both}
+main.anim>*:nth-child(2){animation-delay:.06s}main.anim>*:nth-child(3){animation-delay:.12s}main.anim>*:nth-child(4){animation-delay:.18s}
+main.anim>*:nth-child(5){animation-delay:.24s}main.anim>*:nth-child(6){animation-delay:.3s}main.anim>*:nth-child(n+7){animation-delay:.36s}
+/* кольца прогресса */
+.rg{position:relative;flex:0 0 auto}
+.rg svg{width:100%;height:100%;transform:rotate(-90deg);overflow:visible}
+.rg circle{fill:none}
+.rg-t{stroke:var(--line)}
+.rg-p{stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(.2,.8,.2,1)}
+.rg-c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;line-height:1.1}
+.rg-c b{font:700 21px/1 var(--display);font-variant-numeric:tabular-nums}
+.rg-c span{font-size:11px;color:var(--dim);margin-top:4px;font-weight:700}
+.rings{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;justify-items:center}
+.rings button{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:12px;font-weight:800;color:var(--dim);width:100%;border-radius:18px;padding:4px 0}
+.wk{display:flex;justify-content:space-between;gap:6px}
+.wk div{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;font-weight:700;color:var(--dim)}
+.wk i{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-style:normal;font-size:13px;font-weight:800}
+.wk i.on{background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:transparent;color:var(--on)}
+.wk i.td{border-color:var(--accent)}
+.streak{font-size:13px;font-weight:800;color:var(--warn)}
+/* вкладки внутри раздела */
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;background:var(--surface);border:1px solid var(--line);border-radius:18px}
+.seg button{min-height:42px;border-radius:14px;font-weight:800;font-size:13px;color:var(--dim)}
+.seg button[aria-pressed="true"]{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--on);box-shadow:0 6px 18px -8px var(--accent)}
+.mbar{display:grid;grid-template-columns:70px 1fr auto;gap:8px 10px;align-items:center;font-size:13px;font-weight:700}
+.mbar .bar{height:9px}
+.daynav{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.daynav b{font-weight:800}
+.daynav .icon-btn[disabled]{opacity:.3}
+.meal{display:flex;justify-content:space-between;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);padding-top:6px}
+.fe{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.fe .nm{font-weight:800;overflow:hidden;text-overflow:ellipsis}
+.fe .sub{font-size:12px;color:var(--dim)}
+.quick{display:flex;gap:8px;flex-wrap:wrap}
+.quick .chip{min-height:34px;font-size:12px;padding:0 12px}
+details.cust summary{cursor:pointer;font-weight:800;color:var(--accent);padding:4px 0}
+details.cust .form{margin-top:10px}
+.water-btns{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.big-c{display:flex;flex-direction:column;align-items:center;gap:12px}
+input[type=range]{width:100%;accent-color:var(--accent);min-height:34px}
+.sleep-out{font:700 38px/1 var(--display);text-align:center}
+/* достижения */
+.ach-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ach{border:1px solid var(--line);border-radius:18px;padding:12px 6px 10px;display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;background:var(--surface2);min-width:0}
+.ach .ic{font-size:30px;line-height:1.1}
+.ach b{font-size:12px;line-height:1.2;font-weight:800}
+.ach small{font-size:10px;color:var(--dim);line-height:1.25}
+.ach .bar{width:80%;height:4px;margin-top:2px}.ach .bar i{background:var(--accent)}
+.ach.lock .ic{filter:grayscale(1);opacity:.35}.ach.lock b{color:var(--dim)}
+.ach.got{border-color:color-mix(in srgb,var(--accent) 55%,var(--line));box-shadow:0 0 24px -10px var(--accent)}
+.wchart{width:100%;height:auto;display:block}
+.wchart text{fill:var(--dim);font:700 10.5px var(--body)}
+.hint{font-size:12px;color:var(--dim)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 <noscript><style>#splash{display:none}</style></noscript>
@@ -365,7 +441,7 @@ const REST_MET=1.5;
 
 /* ---------- тело: фигуры мышц (центр x=100) ---------- */
 let SIL='#E7E0CA', OFF='#D3DCC4',THEME='light';
-const THEMES={light:{sil:'#E7E0CA',off:'#D3DCC4',meta:'#FBF7EC'},dark:{sil:'#2A3E31',off:'#3A5646',meta:'#0F1A14'}};
+const THEMES={light:{sil:'#E7E0CA',off:'#D3DCC4',meta:'#F2F7F4'},dark:{sil:'#2A3E31',off:'#3A5646',meta:'#060E10'}};
 const LV0=Object.assign({},LV);
 function applyTheme(t){
   THEME=t==='dark'?'dark':'light';const d=THEME==='dark',th=THEMES[THEME];
@@ -529,7 +605,7 @@ const fmt=s=>`${pad(Math.floor(s/60))}:${pad(s%60)}`;
 const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const S={tab:'home',filter:'Все',sheet:null,timer:null,prefill:null,
   schedule:store.get('skill.schedule',[]),log:store.get('skill.log',[]),weight:+store.get('skill.weight',70)||70,profile:store.get('skill.profile',null),
-  set:Object.assign({sound:true,music:true,vibe:true},store.get('skill.settings',{}))};
+  set:Object.assign({sound:true,music:true,vibe:true,voice:true,remind:false,remindT:'18:00'},store.get('skill.settings',{}))};
 
 function weekStats(){const from=new Date();from.setDate(from.getDate()-6);const f=iso(from);let n=0,k=0,m=0;S.log.forEach(e=>{if(e.d>=f){n++;k+=e.kcal;m+=e.min}});return{n,k,m:Math.round(m)}}
 function streak(){const days=new Set(S.log.map(e=>e.d));const d=new Date();if(!days.has(iso(d)))d.setDate(d.getDate()-1);let n=0;while(days.has(iso(d))){n++;d.setDate(d.getDate()-1)}return n}
@@ -547,6 +623,255 @@ const ICON={
 const NAV=[['home','Главная'],['work','Тренировки'],['plan','Расписание'],['prog','Прогресс'],['cal','Питание']];
 function renderNav(){$('#nav').innerHTML=NAV.map(([k,t])=>`<button data-action="tab" data-arg="${k}" ${S.tab===k?'aria-current="page"':''}><svg viewBox="0 0 24 24" aria-hidden="true">${ICON[k]}</svg>${t}</button>`).join('')}
 
+/* ---------- v13: дневник питания, вода, сон, вес, замеры, достижения, напоминания ---------- */
+const LOGO=(document.querySelector('#splash img')||{}).src||'';
+const REDUCE=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+const clamp01=x=>Math.max(0,Math.min(1,x));
+const todayIso=()=>iso(new Date());
+const hap=n=>{if(S.set.vibe){try{navigator.vibrate&&navigator.vibrate(n)}catch(e){}}};
+const dWord=n=>{const a=n%10,b=n%100;return a===1&&b!==11?'день':a>=2&&a<=4&&(b<12||b>14)?'дня':'дней'};
+S.food=store.get('skill.food',[]);S.water=store.get('skill.water',{});S.sleep=store.get('skill.sleep',{});
+S.wlog=store.get('skill.wlog',[]);S.meas=store.get('skill.meas',[]);S.goalW=store.get('skill.goalW',null);
+S.foodDay=todayIso();S.calTab='norm';S.anim=true;S.ach=store.get('skill.ach',null);
+
+/* продукты на 100 г: название, ккал, белки, жиры, углеводы */
+const FOODS=[['Куриная грудка (варёная)',165,31,3.6,0],['Индейка (филе)',115,22,2,0],['Говядина (варёная)',254,26,16,0],['Лосось',208,20,13,0],['Тунец консервированный',116,26,1,0],['Яйцо варёное',155,12.6,10.6,1.1],
+ ['Творог 5%',121,17,5,1.8],['Греческий йогурт',66,6,2,4],['Молоко 2.5%',52,2.8,2.5,4.7],['Кефир 1%',40,3,1,4],['Сыр',350,25,27,0],
+ ['Овсянка на воде',88,3,1.7,15],['Гречка варёная',110,4,1.1,21],['Рис варёный',130,2.7,.3,28],['Макароны варёные',158,5.8,.9,31],['Картофель варёный',82,2,.4,17],['Хлеб цельнозерновой',247,13,3.4,41],['Мюсли',360,9,7,66],
+ ['Банан',96,1.5,.2,21],['Яблоко',52,.3,.2,14],['Апельсин',47,.9,.1,12],['Авокадо',160,2,15,9],['Огурец',15,.8,.1,3],['Помидор',20,.9,.2,4],['Брокколи',34,2.8,.4,7],
+ ['Миндаль',579,21,50,22],['Арахисовая паста',588,25,50,20],['Оливковое масло',884,0,100,0],['Тёмный шоколад',546,5,31,61],['Протеиновый коктейль',400,80,6,8]];
+const MEALS=['Завтрак','Обед','Ужин','Перекус'];
+const mealNow=()=>{const h=new Date().getHours();return h<11?0:h<16?1:h<21?2:3};
+const dayFood=d=>S.food.filter(e=>e.d===d);
+const sumFood=a=>a.reduce((t,e)=>({k:t.k+e.k,p:t.p+e.p,f:t.f+e.f,c:t.c+e.c}),{k:0,p:0,f:0,c:0});
+const nutTarget=()=>calcNut(S.profile,+S.nut.act,nutGoal());
+const waterGoal=()=>Math.max(1500,Math.round(S.weight*35/50)*50);
+const waterToday=()=>S.water[todayIso()]||0;
+function logW(kg){const d=todayIso(),i=S.wlog.findIndex(e=>e.d===d);if(i>=0)S.wlog[i].kg=kg;else S.wlog.push({d,kg});S.wlog.sort((a,b)=>a.d.localeCompare(b.d));store.set('skill.wlog',S.wlog)}
+if(!S.wlog.length&&S.profile)logW(S.weight);
+function bestStreak(){const ds=[...new Set(S.log.map(e=>e.d))].sort();let b=0,c=0,prev=null;ds.forEach(d=>{if(prev&&Math.round((new Date(d+'T00:00')-new Date(prev+'T00:00'))/864e5)===1)c++;else c=1;if(c>b)b=c;prev=d});return b}
+const kcalTotal=()=>S.log.reduce((a,e)=>a+e.kcal,0);
+const waterDays=()=>Object.values(S.water).filter(v=>v>=waterGoal()).length;
+
+/* достижения */
+const ACH=[
+ {id:'w1',i:'💪',t:'Первый шаг',d:'Заверши первую тренировку',v:()=>S.log.length,g:1},
+ {id:'w5',i:'🔥',t:'Разогрев',d:'5 тренировок',v:()=>S.log.length,g:5},
+ {id:'w10',i:'🚀',t:'Втянулся',d:'10 тренировок',v:()=>S.log.length,g:10},
+ {id:'w25',i:'🥇',t:'Сила привычки',d:'25 тренировок',v:()=>S.log.length,g:25},
+ {id:'w50',i:'🏆',t:'Легенда',d:'50 тренировок',v:()=>S.log.length,g:50},
+ {id:'s3',i:'📅',t:'Три дня подряд',d:'Серия из 3 дней',v:bestStreak,g:3},
+ {id:'s7',i:'⭐',t:'Неделя без пропусков',d:'Серия из 7 дней',v:bestStreak,g:7},
+ {id:'s14',i:'🌟',t:'Две недели',d:'Серия из 14 дней',v:bestStreak,g:14},
+ {id:'s30',i:'👑',t:'Месяц силы',d:'Серия из 30 дней',v:bestStreak,g:30},
+ {id:'k1',i:'⚡',t:'1000 ккал',d:'Сожги 1000 ккал',v:kcalTotal,g:1000},
+ {id:'k5',i:'🌋',t:'5000 ккал',d:'Сожги 5000 ккал',v:kcalTotal,g:5000},
+ {id:'k10',i:'☄️',t:'10 000 ккал',d:'Сожги 10 000 ккал',v:kcalTotal,g:10000},
+ {id:'p1',i:'🦾',t:'Король отжиманий',d:'Заверши программу по отжиманиям',v:()=>S.log.filter(e=>/^Отжимания/.test(e.w)).length,g:1},
+ {id:'er',i:'🌅',t:'Ранняя пташка',d:'Потренируйся до 8 утра',v:()=>S.log.filter(e=>e.t<'08:00').length,g:1},
+ {id:'wa1',i:'💧',t:'Водный баланс',d:'Выпей дневную норму воды',v:waterDays,g:1},
+ {id:'wa7',i:'🌊',t:'Океан',d:'Норма воды 7 дней',v:waterDays,g:7},
+ {id:'f7',i:'🥗',t:'Следим за питанием',d:'Дневник питания 7 дней',v:()=>new Set(S.food.map(e=>e.d)).size,g:7},
+ {id:'sl',i:'😴',t:'Здоровый сон',d:'7+ часов сна, 5 ночей',v:()=>Object.values(S.sleep).filter(h=>h>=7).length,g:5},
+ {id:'wt',i:'⚖️',t:'Под контролем',d:'Запиши вес 5 раз',v:()=>S.wlog.length,g:5},
+ {id:'ms',i:'📏',t:'Замерщик',d:'Сделай 3 замера тела',v:()=>S.meas.length,g:3}];
+function checkAch(){
+  const first=S.ach===null,have=S.ach||{},now=ACH.filter(x=>x.v()>=x.g&&!have[x.id]);
+  if(!now.length&&!first)return;
+  const d=todayIso(),next=Object.assign({},have);now.forEach(x=>next[x.id]=d);S.ach=next;store.set('skill.ach',next);
+  if(first)return; /* при первом запуске молча фиксируем уже заработанное */
+  hap([20,40,20]);toast('🏆 Достижение: '+now.map(x=>x.t).join(', '));
+}
+
+/* кольцо прогресса (заполняется плавно, см. animate) */
+function ring(p,col,size,sw,inner){
+  const r=(size-sw)/2,C=+(2*Math.PI*r).toFixed(1),off=+(C*(1-clamp01(p))).toFixed(1),h=size/2;
+  return `<div class="rg" style="width:${size}px;height:${size}px"><svg viewBox="0 0 ${size} ${size}" aria-hidden="true"><circle class="rg-t" cx="${h}" cy="${h}" r="${r}" stroke-width="${sw}"/><circle class="rg-p" cx="${h}" cy="${h}" r="${r}" stroke-width="${sw}" stroke="${col}" style="filter:drop-shadow(0 0 5px color-mix(in srgb,${col} 55%,transparent))" stroke-dasharray="${C}" stroke-dashoffset="${C}" data-off="${off}"/></svg><div class="rg-c">${inner}</div></div>`;
+}
+function animate(root){
+  root=root||document;
+  root.querySelectorAll('.rg-p[data-off]').forEach(c=>{if(REDUCE){c.style.strokeDashoffset=c.dataset.off;return}requestAnimationFrame(()=>requestAnimationFrame(()=>{c.style.strokeDashoffset=c.dataset.off}))});
+  root.querySelectorAll('[data-count]').forEach(el=>{const to=+el.dataset.count,dec=+el.dataset.dec||0,f=v=>dec?v.toFixed(dec):String(Math.round(v));
+    if(REDUCE||!(to>0)){el.textContent=f(to);return}
+    const t0=performance.now();el.textContent=f(0);(function s(t){const p=clamp01((t-t0)/900),e=1-Math.pow(1-p,3);el.textContent=f(to*e);if(p<1)requestAnimationFrame(s)})(t0)});
+}
+
+/* ---- главная: кольца за сегодня ---- */
+function homeToday(){
+  const t=nutTarget(),k=Math.round(sumFood(dayFood(todayIso())).k),wd=waterToday(),wg=waterGoal(),ws=weekStats(),goal=4,st=streak();
+  const dots=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const id=iso(d),on=S.log.some(e=>e.d===id);dots.push(`<div><i class="${on?'on':''} ${i===0?'td':''}">${on?'✓':''}</i>${DOW[d.getDay()]}</div>`)}
+  return `<section class="panel"><div class="section-head" style="margin:0"><h2 class="h2">Сегодня</h2><span class="streak num">🔥 ${st} ${dWord(st)} подряд</span></div>
+   <div class="rings num">
+    <button data-action="goCal" data-arg="diary" aria-label="Калории: открыть дневник питания">${ring(t?k/t.kcal:0,'var(--accent)',104,10,`<b data-count="${k}">${k}</b><span>${t?'из '+t.kcal:'ккал'}</span>`)}Калории</button>
+    <button data-action="goCal" data-arg="water" aria-label="Вода: открыть трекер">${ring(wd/wg,'var(--accent2)',104,10,`<b data-count="${(wd/1000).toFixed(1)}" data-dec="1">${(wd/1000).toFixed(1)}</b><span>из ${(wg/1000).toFixed(1)} л</span>`)}Вода</button>
+    <button data-action="tab" data-arg="prog" aria-label="Тренировки за неделю">${ring(ws.n/goal,'var(--pink)',104,10,`<b data-count="${ws.n}">${ws.n}</b><span>из ${goal}</span>`)}Тренировки</button></div>
+   <div class="wk">${dots.join('')}</div></section>`;
+}
+
+/* ---- питание: вкладки раздела ---- */
+function vCal(){
+  const T=[['norm','Норма'],['diary','Дневник'],['water','Вода и сон']];
+  const head=`<header><h1 class="h1">Питание</h1><p class="dim" style="margin-top:6px">Норма калорий, дневник питания, вода и сон. Данные хранятся только на этом устройстве.</p></header>
+  <div class="seg" role="group" aria-label="Раздел">${T.map(([k,t])=>`<button data-action="calTab" data-arg="${k}" aria-pressed="${S.calTab===k}">${t}</button>`).join('')}</div>`;
+  return head+(S.calTab==='diary'?vDiary():S.calTab==='water'?vWater():vNorm());
+}
+function dayLabel(d){const t=todayIso();if(d===t)return'Сегодня';const y=new Date();y.setDate(y.getDate()-1);if(d===iso(y))return'Вчера';const x=new Date(d+'T00:00');return DOW[x.getDay()]+', '+x.getDate()+' '+MON[x.getMonth()]}
+function vDiary(){
+  const day=S.foodDay,list=dayFood(day),tot=sumFood(list),t=nutTarget(),isToday=day===todayIso();
+  const left=t?t.kcal-Math.round(tot.k):null,kk=Math.round(tot.k);
+  const mb=(nm,v,g,c)=>`<span>${nm}</span><div class="bar" style="--c:${c}"><i style="width:${g?Math.min(100,Math.round(v/g*100)):0}%"></i></div><span class="num">${Math.round(v)}${g?' / '+g:''} г</span>`;
+  const center=t?`<b data-count="${Math.abs(left)}">${Math.abs(left)}</b><span>${left>=0?'осталось':'перебор'}</span>`:`<b data-count="${kk}">${kk}</b><span>ккал</span>`;
+  const recent=[...new Map(S.food.slice().reverse().map(e=>[e.n,e])).values()].slice(0,6);
+  const meals=MEALS.map((nm,mi)=>{const a=list.filter(e=>e.m===mi);if(!a.length)return'';
+    return `<div class="meal"><span>${nm}</span><span class="num">${Math.round(sumFood(a).k)} ккал</span></div>`+a.map(e=>`<div class="fe"><div style="min-width:0"><div class="nm">${esc(e.n)}</div><div class="sub num">${e.g?e.g+' г · ':''}Б ${e.p} · Ж ${e.f} · У ${e.c}</div></div><b class="num">${e.k}</b><button class="icon-btn" data-action="foodDel" data-arg="${e.id}" aria-label="Удалить"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>`).join('')}).join('');
+  return `<section class="panel"><div class="daynav"><button class="icon-btn" data-action="dayMove" data-arg="-1" aria-label="Предыдущий день"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><b>${dayLabel(day)}</b><button class="icon-btn" data-action="dayMove" data-arg="1" ${isToday?'disabled':''} aria-label="Следующий день"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button></div>
+   <div class="row" style="gap:18px">${ring(t?tot.k/t.kcal:0,t&&left<0?'var(--pink)':'var(--accent)',128,12,center)}
+    <div class="grow mbar num">${mb('Белки',tot.p,t&&t.p,'var(--accent)')}${mb('Жиры',tot.f,t&&t.f,'var(--warn)')}${mb('Углеводы',tot.c,t&&t.c,'var(--accent2)')}</div></div>
+   ${t?`<p class="hint num">Норма: ${t.kcal} ккал · Б ${t.p} · Ж ${t.f} · У ${t.c} г</p>`:`<p class="hint">Рассчитай норму на вкладке «Норма», и здесь появится остаток на день.</p>`}</section>
+  <section class="panel"><h2 class="h2">Добавить еду</h2>
+   <datalist id="foods">${FOODS.map(f=>`<option value="${f[0]}"></option>`).join('')}</datalist>
+   <div class="form"><div class="field full"><label for="fd-n">Продукт (начни вводить название)</label><input class="inp" id="fd-n" list="foods" autocomplete="off" placeholder="Например, гречка варёная"></div>
+    <div class="field"><label for="fd-g">Порция, г</label><input class="inp" id="fd-g" type="number" inputmode="numeric" min="1" max="3000" value="100"></div>
+    <div class="field"><label for="fd-m">Приём пищи</label><select class="inp" id="fd-m">${MEALS.map((m,i)=>`<option value="${i}" ${i===mealNow()?'selected':''}>${m}</option>`).join('')}</select></div>
+    <button class="btn primary full" data-action="foodAdd">Добавить</button></div>
+   ${recent.length?`<div><div class="hint" style="margin-bottom:8px">Недавние, добавить ещё раз</div><div class="quick">${recent.map(e=>`<button class="chip" data-action="foodQuick" data-arg="${e.id}">${esc(e.n)}</button>`).join('')}</div></div>`:''}
+   <details class="cust"><summary>Своё блюдо или продукт</summary><div class="form">
+    <div class="field full"><label for="fc-n">Название</label><input class="inp" id="fc-n" placeholder="Например, борщ"></div>
+    <div class="field"><label for="fc-k">Ккал</label><input class="inp" id="fc-k" type="number" inputmode="numeric" min="0" max="5000"></div>
+    <div class="field"><label for="fc-p">Белки, г</label><input class="inp" id="fc-p" type="number" inputmode="decimal" min="0" max="500" step="0.1"></div>
+    <div class="field"><label for="fc-f">Жиры, г</label><input class="inp" id="fc-f" type="number" inputmode="decimal" min="0" max="500" step="0.1"></div>
+    <div class="field"><label for="fc-c">Углеводы, г</label><input class="inp" id="fc-c" type="number" inputmode="decimal" min="0" max="800" step="0.1"></div>
+    <button class="btn full" data-action="foodAddCustom">Добавить своё</button></div></details></section>
+  <section class="panel"><h2 class="h2">Съедено ${isToday?'сегодня':dayLabel(day).toLowerCase()}</h2>${list.length?meals:'<div class="empty" style="padding:6px 0">Пока ничего не добавлено.</div>'}</section>`;
+}
+function miniBars(fn,goal,col,fmtv){
+  const W=336,H=150,b=H-24,t=18,slot=W/7,bw=26;const days=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push(d)}
+  const vals=days.map(d=>fn(iso(d))),top=Math.max(goal||0,...vals,1);
+  let o=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img">`;
+  days.forEach((d,i)=>{const cx=slot*i+slot/2,h=(b-t)*vals[i]/top,td=i===6;
+    o+=`<rect x="${cx-bw/2}" y="${t}" width="${bw}" height="${b-t}" rx="7" style="fill:var(--surface2)"/>`;
+    if(vals[i]>0)o+=`<rect x="${cx-bw/2}" y="${b-h}" width="${bw}" height="${h}" rx="7" style="fill:${col};opacity:${td?1:.7}"/><text class="v" x="${cx}" y="${b-h-5}" text-anchor="middle">${fmtv(vals[i])}</text>`;
+    o+=`<text x="${cx}" y="${H-7}" text-anchor="middle" ${td?'style="fill:var(--accent)"':''}>${DOW[d.getDay()]}</text>`});
+  if(goal){const y=b-(b-t)*goal/top;o+=`<line x1="0" x2="${W}" y1="${y}" y2="${y}" stroke="var(--dim)" stroke-width="1" stroke-dasharray="4 4" opacity=".6"/>`}
+  return o+'</svg>';
+}
+function vWater(){
+  const wd=waterToday(),wg=waterGoal(),sl=S.sleep[todayIso()],sv=sl||7.5;
+  const sAvg=(()=>{const a=Object.entries(S.sleep).sort().slice(-7).map(e=>e[1]);return a.length?(a.reduce((x,y)=>x+y,0)/a.length).toFixed(1):null})();
+  return `<section class="panel"><h2 class="h2">Вода сегодня</h2>
+   <div class="big-c">${ring(wd/wg,'var(--accent2)',190,16,`<b style="font-size:30px" data-count="${wd}">${wd}</b><span>из ${wg} мл</span>`)}
+    <p class="hint">Норма считается по весу: около 35 мл на килограмм.</p></div>
+   <div class="water-btns num"><button class="btn small" data-action="waterAdd" data-arg="200">+200</button><button class="btn small" data-action="waterAdd" data-arg="250">+250</button><button class="btn small" data-action="waterAdd" data-arg="330">+330</button><button class="btn small" data-action="waterAdd" data-arg="500">+500</button></div>
+   <button class="dim" style="font-weight:800;font-size:13px;align-self:flex-start" data-action="waterAdd" data-arg="-200">Убрать 200 мл</button>
+   <h2 class="h2" style="margin-top:6px">За 7 дней</h2>${miniBars(d=>S.water[d]||0,wg,'var(--accent2)',v=>(v/1000).toFixed(1))}</section>
+  <section class="panel"><h2 class="h2">Сон</h2>
+   <div class="sleep-out num"><span id="sl-out">${sv.toFixed(1)}</span> ч</div>
+   <input type="range" id="sl-h" min="3" max="12" step="0.5" value="${sv}" aria-label="Часов сна">
+   <button class="btn primary" data-action="sleepSave">${sl?'Обновить сон за эту ночь':'Записать сон за эту ночь'}</button>
+   <h2 class="h2" style="margin-top:6px">За 7 дней${sAvg?` · в среднем ${sAvg} ч`:''}</h2>${miniBars(d=>S.sleep[d]||0,8,'var(--accent)',v=>String(v))}
+   <p class="hint">Взрослым обычно нужно 7–9 часов сна. Пунктир на графике — 8 часов.</p></section>`;
+}
+
+/* ---- прогресс: вес, замеры, достижения ---- */
+function weightPanel(){
+  const a=S.wlog.slice(-40),g=S.goalW;let body;
+  if(a.length<2)body=`<p class="hint">Сохраняй вес в разные дни, и здесь появится график динамики.</p>`;
+  else{
+    const W=336,H=190,pl=34,pr=12,pt=16,pb=26,ts=a.map(e=>new Date(e.d+'T00:00').getTime()),t0=ts[0],t1=ts[ts.length-1];
+    const vs=a.map(e=>e.kg).concat(g?[g]:[]);let lo=Math.floor(Math.min(...vs)-1),hi=Math.ceil(Math.max(...vs)+1);
+    const X=t=>pl+(t1===t0?.5:(t-t0)/(t1-t0))*(W-pl-pr),Y=v=>pt+(hi-v)/(hi-lo)*(H-pt-pb);
+    const pts=a.map((e,i)=>[X(ts[i]),Y(e.kg)]),line=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1)).join('');
+    const area=line+`L${pts[pts.length-1][0].toFixed(1)},${H-pb}L${pts[0][0].toFixed(1)},${H-pb}Z`;
+    const fd=e=>e.d.split('-').reverse().slice(0,2).join('.');
+    body=`<svg class="wchart" viewBox="0 0 ${W} ${H}" role="img" aria-label="График веса"><defs><linearGradient id="wgrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity=".35"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>
+     <text x="2" y="${Y(hi)+4}">${hi}</text><text x="2" y="${Y(lo)+4}">${lo}</text>
+     <line x1="${pl}" x2="${W-pr}" y1="${Y(hi)}" y2="${Y(hi)}" stroke="var(--line)"/><line x1="${pl}" x2="${W-pr}" y1="${Y(lo)}" y2="${Y(lo)}" stroke="var(--line)"/>
+     ${g?`<line x1="${pl}" x2="${W-pr}" y1="${Y(g)}" y2="${Y(g)}" stroke="var(--accent2)" stroke-dasharray="5 4"/><text x="${W-pr}" y="${Y(g)-5}" text-anchor="end" style="fill:var(--accent2)">цель ${g}</text>`:''}
+     <path d="${area}" fill="url(#wgrad)"/><path d="${line}" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+     ${pts.map((p,i)=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${i===pts.length-1?5:3}" fill="var(--accent)"/>`).join('')}
+     <text x="${pl}" y="${H-6}">${fd(a[0])}</text><text x="${W-pr}" y="${H-6}" text-anchor="end">${fd(a[a.length-1])}</text></svg>`;
+    const dl=a[a.length-1].kg-a[0].kg;
+    body+=`<div class="meta num"><span>Сейчас: ${a[a.length-1].kg} кг</span><span class="k">${dl>0?'+':''}${dl.toFixed(1)} кг за период</span>${g?`<span>До цели: ${Math.abs(a[a.length-1].kg-g).toFixed(1)} кг</span>`:''}</div>`;
+  }
+  return `<section class="panel"><h2 class="h2">Динамика веса</h2>${body}
+   <div class="row"><div class="field grow"><label for="f-gw">Цель по весу, кг</label><input class="inp" id="f-gw" type="number" inputmode="decimal" min="25" max="300" step="0.5" value="${g||''}" placeholder="например, 70"></div><button class="btn" style="align-self:flex-end" data-action="goalWSave">Задать</button></div></section>`;
+}
+const MFIELDS=[['chest','Грудь'],['waist','Талия'],['hips','Бёдра'],['arm','Бицепс']];
+function measPanel(){
+  const last=k=>{const a=S.meas.filter(e=>e[k]>0);return[a[a.length-1],a[a.length-2]]};
+  const tiles=MFIELDS.map(([k,t])=>{const[x,y]=last(k);const d=x&&y?x[k]-y[k]:null;return `<div class="tile"><b>${x?x[k]+' см':'—'}</b><span>${t}${d!==null&&d!==0?` · ${d>0?'+':''}${d.toFixed(1)}`:''}</span></div>`}).join('');
+  return `<section class="panel"><h2 class="h2">Замеры тела</h2><div class="tiles num" style="grid-template-columns:1fr 1fr">${tiles}</div>
+   <div class="form">${MFIELDS.map(([k,t])=>{const x=last(k)[0];return `<div class="field"><label for="m-${k}">${t}, см</label><input class="inp" id="m-${k}" type="number" inputmode="decimal" min="10" max="250" step="0.5" placeholder="${x?x[k]:''}"></div>`}).join('')}
+    <button class="btn full" data-action="measSave">Сохранить замеры</button></div></section>`;
+}
+function achPanel(){
+  const got=S.ach||{},n=ACH.filter(a=>got[a.id]).length;
+  return `<section class="panel"><div class="section-head" style="margin:0"><h2 class="h2">Достижения</h2><span class="dim num" style="font-size:13px;font-weight:800">${n} из ${ACH.length}</span></div>
+   <div class="ach-grid">${ACH.map(a=>{const v=Math.min(a.v(),a.g),ok=!!got[a.id];return `<div class="ach ${ok?'got':'lock'}"><div class="ic">${a.i}</div><b>${a.t}</b><small>${ok?'Получено':a.d}</small>${ok?'':`<div class="bar"><i style="width:${Math.round(v/a.g*100)}%"></i></div>`}</div>`}).join('')}</div></section>`;
+}
+
+/* ---- голос и звук таймера ---- */
+const voice={ok:'speechSynthesis' in window,
+  say(t){if(!S.set.voice||!this.ok)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='ru-RU';u.rate=1.03;const v=(speechSynthesis.getVoices()||[]).find(x=>/^ru/i.test(x.lang));if(v)u.voice=v;speechSynthesis.speak(u)}catch(e){}},
+  stop(){try{this.ok&&speechSynthesis.cancel()}catch(e){}}};
+function tick(){hap(25);if(!S.set.sound)return;try{const A=window.AudioContext||window.webkitAudioContext;if(!A)return;const c=beep.c||(beep.c=new A()),o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.value=660;g.gain.setValueAtTime(.14,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.09);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.1)}catch(e){}}
+
+/* ---- напоминания (работают, пока приложение открыто или установлено на экран) ---- */
+function remindNow(title,body){
+  try{if('Notification' in window&&Notification.permission==='granted'){
+    const show=r=>r.showNotification(title,{body,icon:'icon-192.png',badge:'icon-192.png',tag:'skill-remind'});
+    if(navigator.serviceWorker&&navigator.serviceWorker.ready){navigator.serviceWorker.ready.then(show).catch(()=>{try{new Notification(title,{body,icon:'icon-192.png'})}catch(e){}});return}
+    new Notification(title,{body,icon:'icon-192.png'});return}}catch(e){}
+  hap([30,60,30]);toast('⏰ '+title);
+}
+function askNotif(){try{if(!('Notification' in window)){toast('Этот браузер не поддерживает уведомления, напоминание покажется внутри приложения');return}
+  if(Notification.permission==='default')Notification.requestPermission().then(p=>{if(p!=='granted')toast('Уведомления не разрешены: напоминание покажется внутри приложения')});
+  else if(Notification.permission==='denied')toast('Уведомления запрещены в настройках браузера, напоминание покажется внутри приложения')}catch(e){}}
+function checkRemind(){
+  const now=new Date(),d=iso(now),mins=now.getHours()*60+now.getMinutes(),mm=t=>{const p=String(t).split(':');return(+p[0])*60+(+p[1]||0)};
+  let f=store.get('skill.fired',{});if(f.day!==d)f={day:d};let ch=false;
+  if(S.set.remind&&S.set.remindT){const at=mm(S.set.remindT);if(!f.r&&mins>=at&&mins-at<=180){f.r=1;ch=true;if(!S.log.some(e=>e.d===d))remindNow('Пора на тренировку 💪','Открой SKILL и начни: хватит и 15 минут.')}}
+  S.schedule.forEach(e=>{if(e.d!==d)return;const at=mm(e.t),k='s'+e.t+e.w;if(!f[k]&&mins>=at&&mins-at<=60){f[k]=1;ch=true;remindNow('Тренировка по расписанию',e.w+' в '+e.t)}});
+  if(ch)store.set('skill.fired',f);
+}
+
+/* ---- карточка результата для соцсетей ---- */
+function addFood(e){S.food.push(Object.assign({id:Date.now()*1000+Math.floor(Math.random()*1000),d:S.foodDay},e));store.set('skill.food',S.food);render();toast('Добавлено: '+e.n+' · '+e.k+' ккал');checkAch()}
+const loadImg=src=>new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=src});
+async function makeCard(T){
+  const w=WK[T.n],W=1080,H=1920,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  const FF='Manrope,system-ui,-apple-system,Segoe UI,Roboto,sans-serif',FD='Unbounded,Arial Black,system-ui,sans-serif';
+  try{await Promise.all([document.fonts.load('800 40px Manrope'),document.fonts.load('700 40px Unbounded')])}catch(e){}
+  x.fillStyle='#060e10';x.fillRect(0,0,W,H);
+  let g=x.createRadialGradient(W,0,0,W,0,1100);g.addColorStop(0,'rgba(45,182,245,.28)');g.addColorStop(1,'rgba(45,182,245,0)');x.fillStyle=g;x.fillRect(0,0,W,H);
+  g=x.createRadialGradient(0,300,0,0,300,1000);g.addColorStop(0,'rgba(141,224,75,.2)');g.addColorStop(1,'rgba(141,224,75,0)');x.fillStyle=g;x.fillRect(0,0,W,H);
+  g=x.createRadialGradient(W/2,1700,0,W/2,1700,800);g.addColorStop(0,'rgba(255,143,107,.12)');g.addColorStop(1,'rgba(255,143,107,0)');x.fillStyle=g;x.fillRect(0,0,W,H);
+  if(LOGO){try{const img=await loadImg(LOGO),lw=560,lh=lw*img.height/img.width,o=document.createElement('canvas');o.width=img.width;o.height=img.height;const q=o.getContext('2d');q.drawImage(img,0,0);
+      q.globalCompositeOperation='destination-in';let m=q.createLinearGradient(0,0,o.width,0);m.addColorStop(0,'rgba(0,0,0,0)');m.addColorStop(.09,'#000');m.addColorStop(.91,'#000');m.addColorStop(1,'rgba(0,0,0,0)');q.fillStyle=m;q.fillRect(0,0,o.width,o.height);
+      m=q.createLinearGradient(0,0,0,o.height);m.addColorStop(0,'rgba(0,0,0,0)');m.addColorStop(.08,'#000');m.addColorStop(.92,'#000');m.addColorStop(1,'rgba(0,0,0,0)');q.fillStyle=m;q.fillRect(0,0,o.width,o.height);
+      x.globalCompositeOperation='lighten';x.drawImage(o,(W-lw)/2,30,lw,lh);x.globalCompositeOperation='source-over'}catch(e){}}
+  x.textAlign='center';
+  x.fillStyle='#8DE04B';x.font=`800 40px ${FF}`;x.fillText('ТРЕНИРОВКА ЗАВЕРШЕНА',W/2,560);
+  let fs=84;x.font=`700 ${fs}px ${FD}`;while(x.measureText(T.n).width>940&&fs>40){fs-=4;x.font=`700 ${fs}px ${FD}`}
+  x.fillStyle='#fff';x.fillText(T.n,W/2,680);
+  g=x.createLinearGradient(260,0,820,0);g.addColorStop(0,'#8DE04B');g.addColorStop(1,'#2DB6F5');x.fillStyle=g;x.font=`700 230px ${FD}`;x.fillText(String(Math.round(T.kcal)),W/2,920);
+  x.fillStyle='#8FA7A0';x.font=`800 44px ${FF}`;x.fillText('ккал сожжено',W/2,988);
+  const rr=(X,Y,w2,h2,r)=>{x.beginPath();x.moveTo(X+r,Y);x.arcTo(X+w2,Y,X+w2,Y+h2,r);x.arcTo(X+w2,Y+h2,X,Y+h2,r);x.arcTo(X,Y+h2,X,Y,r);x.arcTo(X,Y,X+w2,Y,r);x.closePath()};
+  const st=[[fmt(T.elapsed),'время'],[String(w.ex.length),'упражнений'],[String(streak()),dWord(streak())+' подряд']];
+  st.forEach((s,i)=>{const bw=300,gap=30,X=(W-(bw*3+gap*2))/2+i*(bw+gap),Y=1040;rr(X,Y,bw,150,28);x.fillStyle='rgba(255,255,255,.07)';x.fill();x.strokeStyle='rgba(255,255,255,.14)';x.lineWidth=2;x.stroke();
+    x.fillStyle='#fff';x.font=`700 54px ${FD}`;x.fillText(s[0],X+bw/2,Y+78);x.fillStyle='#8FA7A0';x.font=`700 28px ${FF}`;x.fillText(s[1],X+bw/2,Y+122)});
+  try{let svg=body(wInt(T.n),w.c,false).replace('<svg class="body"','<svg xmlns="http://www.w3.org/2000/svg" width="670" height="740"'),im=await loadImg('data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg)),mw=500,mh=mw*740/670;x.drawImage(im,(W-mw)/2,1240,mw,mh)}catch(e){}
+  x.fillStyle='#8FA7A0';x.font=`700 34px ${FF}`;const d=new Date();x.fillText(d.getDate()+' '+MON[d.getMonth()]+' '+d.getFullYear()+' · SKILL Fitness',W/2,1860);
+  return await new Promise(r=>c.toBlob(r,'image/png'));
+}
+async function shareResult(){
+  const T=S.timer;if(!T)return;
+  try{toast('Готовлю картинку…');const blob=await makeCard(T),file=new File([blob],'skill-workout.png',{type:'image/png'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'SKILL',text:`Завершил(а) «${T.n}»: ${Math.round(T.kcal)} ккал!`})}
+    else{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='skill-workout.png';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);toast('Картинка сохранена в загрузки')}
+  }catch(e){if(e&&e.name==='AbortError')return;toast('Не удалось создать картинку')}
+}
+
 /* ---------- экраны ---------- */
 function vHome(){
   const d=new Date(), h=d.getHours();
@@ -554,7 +879,8 @@ function vHome(){
   const g=S.profile&&GOALS[S.profile.goal],pool=g?g.w:NAMES;
   const n=pool[Math.floor(Date.now()/864e5)%pool.length], w=WK[n], ws=weekStats();
   return `<header><div class="eyebrow">${DOW[d.getDay()]}, ${d.getDate()} ${MON[d.getMonth()]}</div><h1 class="h1" style="margin-top:6px">${greet}!</h1></header>
-  <div class="strip num"><div><b>${ws.n}</b><span>тренировок за 7 дней</span></div><div><b>${ws.k}</b><span>ккал сожжено</span></div><div><b>${streak()}</b><span>дней подряд</span></div></div>
+  ${homeToday()}
+  <div class="strip num"><div><b data-count="${ws.n}">${ws.n}</b><span>тренировок за 7 дней</span></div><div><b data-count="${ws.k}">${ws.k}</b><span>ккал сожжено</span></div><div><b data-count="${streak()}">${streak()}</b><span>дней подряд</span></div></div>
   <section><div class="eyebrow" style="margin-bottom:10px">Тренировка дня${g?' · '+g.t.toLowerCase():''}</div>
    <div class="panel hero" style="--c:${w.c}">
     <div class="name">${n}</div>${tags(n)}
@@ -603,11 +929,14 @@ function vProg(){
   const lvl=n<5?'Начинающий':n<20?'Любитель':n<50?'Продвинутый':'Профи';
   const rec=S.log.slice(-6).reverse();
   return `<header><h1 class="h1">Прогресс</h1><p class="dim" style="margin-top:6px">Статистика завершённых тренировок на этом устройстве.</p></header>
-  <div class="tiles"><div class="tile"><b>${n}</b><span>тренировок</span></div><div class="tile" style="--c:var(--warn)"><b>${k}</b><span>ккал</span></div><div class="tile"><b>${m}</b><span>минут</span></div></div>
+  <div class="tiles"><div class="tile"><b data-count="${n}">${n}</b><span>тренировок</span></div><div class="tile" style="--c:var(--warn)"><b data-count="${k}">${k}</b><span>ккал</span></div><div class="tile"><b data-count="${m}">${m}</b><span>минут</span></div></div>
   <div class="eyebrow" style="margin-top:-12px">Уровень: <span style="color:var(--accent)">${lvl}</span></div>
   <section class="panel"><h2 class="h2">Калории за 7 дней</h2>${chart()}</section>
+  ${weightPanel()}
   <section class="panel"><h2 class="h2">Твой вес</h2><p class="dim" style="font-size:13px">По нему считаются калории (формула MET).</p>
    <div class="row"><div class="field grow"><label for="f-kg">Вес, кг</label><input class="inp" id="f-kg" type="number" inputmode="decimal" min="25" max="300" step="0.5" value="${S.weight}"></div><button class="btn primary" style="align-self:flex-end" data-action="saveW">Сохранить</button></div><button class="dim" style="font-weight:800;font-size:13px;align-self:flex-start" data-action="onbOpen">${S.profile?'Изменить анкету':'Заполнить анкету'}</button></section>
+  ${measPanel()}
+  ${achPanel()}
   <section><h2 class="h2" style="margin-bottom:6px">Последние тренировки</h2>${rec.length?rec.map(e=>`<div class="hist" style="--c:${WK[e.w]?WK[e.w].c:'#3A7350'}"><div class="nm">${esc(e.w)}</div><div class="k num">${e.kcal} ккал</div><div class="sub num">${e.d.split('-').reverse().join('.')} · ${esc(e.t)}</div><div class="sub num" style="text-align:right">${e.min} мин</div></div>`).join(''):'<div class="empty">Пока пусто. Заверши тренировку в таймере, и она появится здесь.</div>'}</section>`;
 }
 /* ---------- питание: суточная норма калорий и БЖУ ---------- */
@@ -626,12 +955,12 @@ function calcNut(p,act,goal){
   const carb=Math.max(0,(kcal-prot*4-fat*9)/4);                     /* углеводы, г: всё остальное */
   return{bmr:Math.round(bmr),tdee:Math.round(tdee),kcal:Math.round(kcal),p:Math.round(prot),f:Math.round(fat),c:Math.round(carb)};
 }
-function vCal(){
+function vNorm(){
   const p=S.profile,act=String(S.nut.act),goal=nutGoal(),r=calcNut(p,+act,goal);
   const sx=(v,t)=>`<label><input type="radio" name="c-sex" value="${v}" ${p&&p.sex===v?'checked':''}><span>${t}</span></label>`;
   const share=r?[Math.round(r.p*4/r.kcal*100),Math.round(r.f*9/r.kcal*100)]:[0,0];share.push(100-share[0]-share[1]);
   const res=r?`<section class="panel" id="nut-res"><h2 class="h2">Суточная норма</h2>
-   <div style="display:flex;flex-direction:column;gap:2px"><div class="done-num num" style="color:var(--accent)">${r.kcal}</div><span class="dim" style="font-size:13px">ккал в день · ${NGOAL[goal].t.toLowerCase()} (${NGOAL[goal].d})</span></div>
+   <div style="display:flex;flex-direction:column;gap:2px"><div class="done-num num" style="color:var(--accent)" data-count="${r.kcal}">${r.kcal}</div><span class="dim" style="font-size:13px">ккал в день · ${NGOAL[goal].t.toLowerCase()} (${NGOAL[goal].d})</span></div>
    <div class="tiles num">
     <div class="tile" style="--c:var(--accent)"><b>${r.p} г</b><span>белки · ${share[0]}%</span></div>
     <div class="tile" style="--c:var(--warn)"><b>${r.f} г</b><span>жиры · ${share[1]}%</span></div>
@@ -640,8 +969,7 @@ function vCal(){
    <div class="meta num dim"><span>Базовый обмен: ${r.bmr} ккал</span><span>С активностью: ${r.tdee} ккал</span></div>
    <p class="dim" style="font-size:12px">Расчёт ориентировочный (формула Миффлина — Сан Жеора). Это не медицинская рекомендация: при заболеваниях и особых диетах посоветуйся с врачом.</p></section>`
   :`<section class="panel"><p class="dim" style="font-size:14px">Заполни данные выше и нажми «Рассчитать», чтобы увидеть свою суточную норму калорий, белков, жиров и углеводов.</p></section>`;
-  return `<header><h1 class="h1">Питание</h1><p class="dim" style="margin-top:6px">Суточная норма калорий, белков, жиров и углеводов. Данные хранятся только на этом устройстве.</p></header>
-  <section class="panel"><h2 class="h2">Мои данные</h2><div class="form">
+  return `<section class="panel"><h2 class="h2">Мои данные</h2><div class="form">
     <div class="field"><label for="c-h">Рост, см</label><input class="inp" id="c-h" type="number" inputmode="numeric" min="100" max="250" step="1" placeholder="175" value="${p?p.height:''}"></div>
     <div class="field"><label for="c-w">Вес, кг</label><input class="inp" id="c-w" type="number" inputmode="decimal" min="25" max="300" step="0.5" placeholder="70" value="${p?S.weight:''}"></div>
     <div class="field full"><label for="c-a">Возраст, лет</label><input class="inp" id="c-a" type="number" inputmode="numeric" min="10" max="100" step="1" placeholder="25" value="${p?p.age:''}"></div>
@@ -651,7 +979,7 @@ function vCal(){
    </div><button class="btn primary" data-action="calSave">Рассчитать</button></section>
   ${res}`;
 }
-function render(){$('#main').innerHTML=({home:vHome,work:vWork,plan:vPlan,prog:vProg,cal:vCal})[S.tab]();renderNav()}
+function render(){const m=$('#main');m.innerHTML=({home:vHome,work:vWork,plan:vPlan,prog:vProg,cal:vCal})[S.tab]();renderNav();if(S.anim){m.classList.remove('anim');void m.offsetWidth;m.classList.add('anim');S.anim=false}animate(m)}
 
 /* ---------- анкета при входе ---------- */
 function openOnb(){
@@ -684,7 +1012,12 @@ function renderSet(){
     ${sw('sound','Звуковые сигналы','Сигнал при старте и смене упражнения')}
     ${sw('music','Музыка','Фоновый трек во время тренировки')}
     ${sw('vibe','Вибрация','Короткая вибрация вместе с сигналом')}
+    ${sw('voice','Голосовые подсказки','Называет упражнение, отдых и конец тренировки')}
    </div></section>
+   <section class="panel"><h2 class="h2">Напоминания</h2><div class="set-list">
+    ${sw('remind','Напоминание о тренировке','Придёт в выбранное время, если сегодня ещё не тренировался')}
+    <div class="set-row"><div class="txt"><b id="sl-rmt">Время</b><span>Когда напомнить</span></div><input class="inp" type="time" id="rm-t" value="${S.set.remindT||'18:00'}" aria-labelledby="sl-rmt" style="width:118px"></div>
+   </div><p class="hint">Напоминания работают, пока приложение открыто или установлено на главный экран. Для уведомлений при полностью закрытом приложении нужна отдельная мобильная версия (APK).</p></section>
    <section class="panel"><h2 class="h2">Мои данные</h2>
     ${p?`<div class="tiles prof num"><div class="tile"><b>${p.height} см</b><span>рост</span></div><div class="tile"><b>${S.weight} кг</b><span>вес</span></div><div class="tile"><b>${p.age}</b><span>возраст, лет</span></div><div class="tile"><b>${p.sex==='f'?'Женский':'Мужской'}</b><span>пол</span></div>${GOALS[p.goal]?`<div class="tile" style="grid-column:1/-1"><b>${GOALS[p.goal].t}</b><span>цель</span></div>`:''}<div class="tile" style="--c:var(--accent);grid-column:1/-1"><b>${bmi}</b><span>индекс массы тела</span></div></div>`
       :`<p class="dim" style="font-size:14px">Анкета не заполнена. Заполни её, чтобы видеть свои данные здесь.</p>`}
@@ -745,7 +1078,7 @@ function renderTimer(){
   let inner;
   if(T.phase==='done'){
     inner=`<div class="t-body" style="padding-top:24px"><div class="phase" style="color:var(--good)">Тренировка завершена</div><h2 class="t-ex">Отличная работа!</h2>
-     <div class="done-num">${Math.round(T.kcal)}</div><div class="dim" style="margin-top:-8px">ккал сожжено</div>
+     <div class="done-num" data-count="${Math.round(T.kcal)}">${Math.round(T.kcal)}</div><div class="dim" style="margin-top:-8px">ккал сожжено</div>
      <div class="t-stats"><div><b>${fmt(T.elapsed)}</b><span>время</span></div><div><b>${n}</b><span>упражнений</span></div></div>
      <div class="t-map">${body({},w.c,true)}</div></div>`;
   }else{
@@ -762,8 +1095,8 @@ function renderTimer(){
      <p class="dim" style="font-size:14px;max-width:360px">${show.t}</p>
      ${T.phase!=='rest'&&T.i<n-1?`<div class="eyebrow">Далее: ${w.ex[T.i+1].n}</div>`:''}</div>`;
   }
-  el.innerHTML=`<div class="wrap" style="--c:${w.c}">${head}${inner}${T.phase==='done'?`</div><div class="actions" style="--c:${w.c}"><div class="in"><button class="btn primary" data-action="tClose">Готово</button></div></div><div>`:''}</div>`;
-  tPaint();music.sync();
+  el.innerHTML=`<div class="wrap" style="--c:${w.c}">${head}${inner}${T.phase==='done'?`</div><div class="actions" style="--c:${w.c}"><div class="in"><button class="btn" data-action="shareRes">Поделиться</button><button class="btn primary" data-action="tClose">Готово</button></div></div><div>`:''}</div>`;
+  tPaint();music.sync();animate(el);
 }
 function tPaint(){
   const T=S.timer;if(!T||T.phase==='done')return;
@@ -782,7 +1115,7 @@ function tTick(){
 function tLoop(){cancelAnimationFrame(raf);const T=S.timer;if(!T||!T.running)return;tTick();raf=requestAnimationFrame(tLoop)}
 function tStep(){
   const T=S.timer,w=WK[T.n],e=w.ex[T.i];
-  T.left--;T.elapsed++;
+  T.left--;T.elapsed++;if(T.left>0&&T.left<=3)tick();
   T.kcal+=(T.phase==='work'?(e.met||w.met):REST_MET)*S.weight/3600;
   if(T.left<=0)tAdvance();
 }
@@ -793,19 +1126,19 @@ function tAdvance(){
     const r=w.ex[T.i].r;
     if(r>0){T.phase='rest';T.left=T.total=r}else{T.i++;T.left=T.total=w.ex[T.i].d}
   }else if(T.phase==='rest'){T.i++;T.phase='work';T.left=T.total=w.ex[T.i].d}
-  beep();renderTimer();
+  beep();renderTimer();voice.say(T.phase==='rest'?'Отдых. Дальше: '+w.ex[T.i+1].n:w.ex[T.i].n);
 }
 function tFinish(){
   const T=S.timer;T.running=false;T.phase='done';clearInterval(tid);tid=null;beep();
   const d=new Date();S.log.push({w:T.n,d:iso(d),t:pad(d.getHours())+':'+pad(d.getMinutes()),min:Math.round(T.elapsed/6)/10,kcal:Math.round(T.kcal)});
-  store.set('skill.log',S.log);releaseWake();renderTimer();
+  store.set('skill.log',S.log);releaseWake();renderTimer();checkAch();voice.say('Тренировка завершена. Отличная работа!');
 }
 async function takeWake(){try{if(navigator.wakeLock)wake=await navigator.wakeLock.request('screen')}catch(e){}}
 function releaseWake(){try{wake&&wake.release()}catch(e){}wake=null}
 function tToggle(){
   const T=S.timer;if(T.phase==='done')return;
   if(T.running){T.running=false;clearInterval(tid);tid=null;releaseWake()}
-  else{if(T.phase==='ready')T.phase='work';T.running=true;T.last=performance.now();beep();takeWake();clearInterval(tid);tid=setInterval(tTick,250);tLoop()}
+  else{if(T.phase==='ready'){T.phase='work';voice.say('Начинаем. '+WK[T.n].ex[T.i].n)}T.running=true;T.last=performance.now();beep();takeWake();clearInterval(tid);tid=setInterval(tTick,250);tLoop()}
   renderTimer();
 }
 function tSkip(){const T=S.timer;if(T.phase==='done')return;if(T.phase==='ready')T.phase='work';T.left=0;T.acc=0;tAdvance()}
@@ -815,14 +1148,14 @@ function tClose(){
   if(T.phase!=='done'&&T.elapsed>0&&!T.confirm){if(T.running){T.running=false;clearInterval(tid);tid=null}T.confirm=true;renderTimer();return}
   tExit();
 }
-function tExit(){clearInterval(tid);tid=null;releaseWake();const done=S.timer&&S.timer.phase==='done';S.timer=null;music.sync();$('#timer').hidden=true;document.documentElement.style.overflow='';if(done)S.tab='prog';render();window.scrollTo(0,0)}
+function tExit(){clearInterval(tid);tid=null;releaseWake();voice.stop();const done=S.timer&&S.timer.phase==='done';S.timer=null;music.sync();$('#timer').hidden=true;document.documentElement.style.overflow='';if(done)S.tab='prog';render();window.scrollTo(0,0)}
 
 /* ---------- действия ---------- */
 let toastT=null;
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200)}
 const A={
  themeToggle(){const t=THEME==='dark'?'light':'dark';store.set('skill.theme',t);applyTheme(t);render();renderSet();const b=document.querySelector('.sw[data-action="themeToggle"]');b&&b.focus()},
- tab(a){S.tab=a;render();window.scrollTo(0,0)},
+ tab(a){S.tab=a;S.anim=true;render();window.scrollTo(0,0)},
  filter(a){S.filter=a;render()},
  open(a){openSheet(a)},
  closeSheet,
@@ -837,7 +1170,7 @@ const A={
  saveW(){
   const v=parseFloat(String($('#f-kg').value).replace(',','.'));
   if(!(v>=25&&v<=300)){toast('Введи вес от 25 до 300 кг');return}
-  S.weight=v;store.set('skill.weight',v);if(S.profile){S.profile.weight=v;store.set('skill.profile',S.profile)}toast('Вес сохранён, калории пересчитаны');render();
+  S.weight=v;store.set('skill.weight',v);logW(v);checkAch();if(S.profile){S.profile.weight=v;store.set('skill.profile',S.profile)}toast('Вес сохранён, калории пересчитаны');render();
  },
  onbSkip(){if(!store.get('skill.onb',null))store.set('skill.onb','skipped');closeOnb()},
  onbSave(){
@@ -849,7 +1182,7 @@ const A={
   if(!sex){toast('Выбери пол');return}
   const goal=(document.querySelector('input[name="f-goal"]:checked')||{}).value;
   if(!goal){toast('Выбери цель тренировок');return}
-  S.profile={height:Math.round(h),weight:w,age:Math.round(a),sex,goal};S.weight=w;
+  S.profile={height:Math.round(h),weight:w,age:Math.round(a),sex,goal};S.weight=w;logW(w);checkAch();
   store.set('skill.profile',S.profile);store.set('skill.weight',w);store.set('skill.onb','done');
   closeOnb();toast('Анкета сохранена');
  },
@@ -860,22 +1193,59 @@ const A={
   if(!(w>=25&&w<=300)){toast('Введи вес от 25 до 300 кг');return}
   if(!(a>=10&&a<=100)){toast('Введи возраст от 10 до 100 лет');return}
   if(!sex){toast('Выбери пол');return}
-  S.profile=Object.assign({},S.profile,{height:Math.round(h),weight:w,age:Math.round(a),sex});S.weight=w;
+  S.profile=Object.assign({},S.profile,{height:Math.round(h),weight:w,age:Math.round(a),sex});S.weight=w;logW(w);checkAch();
   store.set('skill.profile',S.profile);store.set('skill.weight',w);if(!store.get('skill.onb',null))store.set('skill.onb','done');
   S.nut={act:$('#c-act').value,goal:$('#c-goal').value};store.set('skill.nut',S.nut);
   render();toast('Норма рассчитана');
   const el=document.getElementById('nut-res');if(el)el.scrollIntoView({block:'start'});
  },
+ calTab(a){S.calTab=a;render()},
+ goCal(a){S.calTab=a;S.tab='cal';S.anim=true;render();window.scrollTo(0,0)},
+ dayMove(a){const d=new Date(S.foodDay+'T00:00');d.setDate(d.getDate()+(+a));if(iso(d)>todayIso())return;S.foodDay=iso(d);render()},
+ foodAdd(){
+  const q=$('#fd-n').value.trim().toLowerCase(),g=parseFloat($('#fd-g').value),m=+$('#fd-m').value;
+  if(!q){toast('Введи название продукта');return}
+  if(!(g>0&&g<=3000)){toast('Укажи порцию в граммах');return}
+  const f=FOODS.find(x=>x[0].toLowerCase()===q)||FOODS.find(x=>x[0].toLowerCase().includes(q));
+  if(!f){toast('Нет в списке. Добавь вручную в блоке «Своё блюдо»');const dt=document.querySelector('details.cust');if(dt)dt.open=true;return}
+  addFood({n:f[0],g,m,k:Math.round(f[1]*g/100),p:+(f[2]*g/100).toFixed(1),f:+(f[3]*g/100).toFixed(1),c:+(f[4]*g/100).toFixed(1)});
+ },
+ foodAddCustom(){
+  const n=$('#fc-n').value.trim(),v=id=>{const x=parseFloat(String($(id).value).replace(',','.'));return x>0?x:0};
+  const k=v('#fc-k');if(!n){toast('Введи название');return}if(!(k>0)){toast('Укажи калории');return}
+  addFood({n,g:0,m:mealNow(),k:Math.round(k),p:+v('#fc-p').toFixed(1),f:+v('#fc-f').toFixed(1),c:+v('#fc-c').toFixed(1)});
+ },
+ foodQuick(a){const e=S.food.find(x=>String(x.id)===String(a));if(!e)return;addFood({n:e.n,g:e.g,m:mealNow(),k:e.k,p:e.p,f:e.f,c:e.c})},
+ foodDel(a){S.food=S.food.filter(e=>String(e.id)!==String(a));store.set('skill.food',S.food);render()},
+ waterAdd(a){const d=todayIso(),v=Math.max(0,(S.water[d]||0)+(+a));S.water[d]=v;store.set('skill.water',S.water);render();checkAch()},
+ sleepSave(){const v=parseFloat($('#sl-h').value);if(!(v>=1&&v<=16))return;S.sleep[todayIso()]=v;store.set('skill.sleep',S.sleep);render();toast('Сон записан: '+v.toFixed(1)+' ч');checkAch()},
+ goalWSave(){
+  const raw=String($('#f-gw').value).replace(',','.').trim();
+  if(!raw){S.goalW=null;store.set('skill.goalW',null);render();toast('Цель по весу убрана');return}
+  const v=parseFloat(raw);if(!(v>=25&&v<=300)){toast('Введи вес от 25 до 300 кг');return}
+  S.goalW=v;store.set('skill.goalW',v);render();toast('Цель сохранена: '+v+' кг');
+ },
+ measSave(){
+  const d=todayIso(),add={};let any=false;
+  MFIELDS.forEach(([k])=>{const v=parseFloat(String($('#m-'+k).value).replace(',','.'));if(v>=10&&v<=250){add[k]=v;any=true}});
+  if(!any){toast('Введи хотя бы один замер в сантиметрах');return}
+  const rec=S.meas.find(e=>e.d===d);if(rec)Object.assign(rec,add);else S.meas.push(Object.assign({d},add));
+  store.set('skill.meas',S.meas);render();toast('Замеры сохранены');checkAch();
+ },
+ shareRes:shareResult,
  onbOpen(){openOnb()},
  setOpen:openSet,setClose:closeSet,
- setToggle(k){S.set[k]=!S.set[k];store.set('skill.settings',S.set);music.sync();renderSet();
+ setToggle(k){S.set[k]=!S.set[k];store.set('skill.settings',S.set);music.sync();renderSet();if(k==='remind'&&S.set.remind)askNotif();if(k==='voice'&&S.set.voice)voice.say('Голосовые подсказки включены');
   const b=document.querySelector(`.sw[data-arg="${k}"]`);b&&b.focus();if(k==='sound'&&S.set.sound)beep()},
  tToggle,tSkip,tReset,tClose,tExit,tStay(){S.timer.confirm=false;renderTimer()}
 };
-document.addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b)return;e.preventDefault();const f=A[b.dataset.action];f&&f(b.dataset.arg)});
+document.addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b||b.disabled)return;e.preventDefault();if(!/^t[A-Z]/.test(b.dataset.action))hap(8);const f=A[b.dataset.action];f&&f(b.dataset.arg)});
+document.addEventListener('input',e=>{if(e.target.id==='sl-h'){const o=$('#sl-out');if(o)o.textContent=parseFloat(e.target.value).toFixed(1)}});
+document.addEventListener('change',e=>{if(e.target.id==='rm-t'&&e.target.value){S.set.remindT=e.target.value;store.set('skill.settings',S.set);toast('Время напоминания: '+e.target.value)}});
 document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('.wcard[data-action]')){e.preventDefault();A.open(e.target.dataset.arg)}});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.timer&&S.timer.running)takeWake()});
-applyTheme(store.get('skill.theme','light'));
+applyTheme(store.get('skill.theme','dark'));
+checkAch();checkRemind();setInterval(checkRemind,30000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkRemind()});
 render();
 /* после заставки всегда открываем окно с данными (заполнено сохранёнными значениями) */
 if(document.getElementById('splash'))document.addEventListener('splashdone',openOnb,{once:true});else openOnb();
