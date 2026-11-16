@@ -432,10 +432,135 @@ E('Отжимания «лучник»',50,20,'triceps,chest,shoulders','Одн�
 E('Ноги на возвышении',45,20,'shoulders,chest,triceps','Ступни на диване или стуле, руки на полу. Нагрузка уходит на верх груди и передние дельты. Не прогибай поясницу.',6,'decline','×10'),
 E('Узкий хват, медленно',50,15,'triceps,chest,shoulders','Опускайся 3 секунды, локти вдоль корпуса. Трицепс под нагрузкой всё время подхода.',6,'narrow','×8')]}
 };
-const NAMES=Object.keys(WK);
-const CATS=['Все','Силовые','Отжимания','Кардио','HIIT','Гибкость'];
+/* v14: новые тренировки по полу */
+const EQ=(n,d,r,m,t,kgf,unit,step,min)=>Object.assign(E(n,d,r,m,t),{kgf,unit,step:step||2.5,min:min||2});
+Object.assign(WK,{
+'Штанга: база':{c:'#7A3A2C',cat:'Со снарядами',sx:'m',lv:'Сложный',met:6,desc:'Базовые движения со штангой: приседания, жим, тяга. Самый быстрый путь к силе и массе. Нужны штанга со стойками или хотя бы тяжёлая гриф и блины.',ex:[
+EQ('Приседания со штангой',50,75,'quads,glutes,hamstrings,lower_back','Штанга на трапециях, спина прямая, взгляд вперёд. Садись до параллели бёдер с полом, 8–10 повторов в подходе. Первый раз бери вес легче и страхуйся.',.6,'штанга'),
+EQ('Жим штанги лёжа',50,75,'chest,triceps,shoulders','Лопатки сведены, ступни на полу. Опускай гриф к низу груди, выжимай вверх. 8–10 повторов, лучше с напарником или в стойке с упорами.',.5,'штанга'),
+EQ('Становая тяга',50,90,'hamstrings,glutes,lower_back,traps','Гриф у голеней, спина ровная, таз назад. Вставай, разгибая бёдра и колени одновременно. Не округляй поясницу.',.7,'штанга'),
+EQ('Жим штанги стоя',45,75,'shoulders,triceps,traps','Гриф у ключиц, пресс и ягодицы напряжены. Выжимай над головой, не прогибая поясницу.',.35,'штанга'),
+EQ('Тяга штанги в наклоне',50,75,'lats,traps,biceps,lower_back','Корпус почти параллельно полу, тяни гриф к низу живота, сводя лопатки.',.45,'штанга'),
+EQ('Подъём штанги на бицепс',40,60,'biceps,forearms','Локти прижаты к корпусу, без раскачки. Опускай гриф медленно, 3 секунды.',.25,'штанга'),
+EQ('Французский жим лёжа',40,0,'triceps,shoulders','Лёжа, гриф над грудью. Сгибай только локти, опуская гриф ко лбу, и разгибай обратно.',.2,'штанга')]},
+'Гантели: всё тело':{c:'#2F5F8C',cat:'Со снарядами',sx:'m',lv:'Средний',met:5.5,desc:'Полный комплекс с парой гантелей: грудь, спина, плечи, ноги и руки. Подходит дома и в зале.',ex:[
+EQ('Жим гантелей лёжа',45,60,'chest,triceps,shoulders','Лёжа на скамье или полу. Опускай гантели до уровня груди и выжимай вверх, 10–12 повторов.',.2,'гантель, каждая',1,4),
+EQ('Приседания «гоблет»',50,60,'quads,glutes,abs','Гантель у груди двумя руками. Садись глубоко, спина прямая.',.3,'гантель',1,6),
+EQ('Тяга гантели в наклоне',45,60,'lats,traps,biceps','Одна рука и колено на опоре, тяни гантель к поясу, сводя лопатки. Смени руку на половине времени.',.25,'гантель',1,5),
+EQ('Жим гантелей сидя',45,60,'shoulders,triceps,traps','Выжимай гантели над головой, не прогибая поясницу.',.18,'гантель, каждая',1,4),
+EQ('Румынская тяга с гантелями',50,60,'hamstrings,glutes,lower_back','Ноги слегка согнуты, гантели скользят вдоль бёдер. Таз назад, спина прямая.',.22,'гантель, каждая',1,4),
+EQ('Сгибания на бицепс',40,45,'biceps,forearms','Локти прижаты, не раскачивайся. Опускай гантели медленно.',.12,'гантель, каждая',1,3),
+EQ('Разгибания из-за головы',40,0,'triceps','Одна гантель двумя руками за головой. Разгибай локти вверх, не разводя их.',.15,'гантель',1,4)]},
+'Гири: взрыв':{c:'#B0541E',cat:'Со снарядами',sx:'m',lv:'Сложный',met:9,desc:'Силовая выносливость с гирей: махи, рывки, приседания. Жжёт калории и качает ягодицы, спину и хват.',ex:[
+EQ('Махи гирей',45,40,'glutes,hamstrings,lower_back,shoulders','Гиря между ног, таз резко вперёд, руки лишь направляют. До уровня груди.',.25,'гиря',4,8),
+EQ('Приседания с гирей у груди',45,40,'quads,glutes,abs','Гиря у груди, локти вниз. Садись глубоко, спина прямая.',.25,'гиря',4,8),
+EQ('Рывок гири',40,45,'shoulders,glutes,lats,forearms','Мах вверх по короткой траектории, гиря «ложится» на предплечье. Смени руку на половине времени.',.2,'гиря',4,8),
+EQ('Швунг гири',45,45,'shoulders,quads,triceps','Лёгкий присед и толчок ногами, выжимай гирю над головой.',.2,'гиря',4,8),
+EQ('Турецкий подъём',50,45,'shoulders,abs,obliques,glutes','Медленно, из положения лёжа в стойку, гиря на вытянутой руке. Смени руку на половине времени.',.15,'гиря',4,8),
+EQ('Ходьба фермера',45,0,'forearms,traps,abs,calves','Две гири в руках, ходи ровно, плечи вниз, пресс напряжён.',.25,'гиря, каждая',4,8)]},
+'Турник и брусья':{c:'#4B4F8F',cat:'Со снарядами',sx:'m',lv:'Сложный',met:6.5,desc:'Подтягивания, брусья и вис: спина, руки и пресс с собственным весом. Нужен турник; брусья можно заменить двумя стульями.',ex:[
+E('Подтягивания',45,75,'lats,biceps,forearms,traps','Хват чуть шире плеч, подтягивайся грудью к перекладине, опускайся полностью. Не получается — подтягивайся с резинкой или негативами.'),
+E('Отжимания на брусьях',45,75,'chest,triceps,shoulders','Корпус слегка наклонён вперёд, опускайся до угла в плечах около 90°.'),
+E('Подтягивания обратным хватом',45,75,'biceps,lats,forearms','Ладони к себе, хват на ширине плеч. Больше работает бицепс.'),
+E('Подъём ног в висе',45,60,'abs,obliques,forearms','Вис на перекладине, поднимай прямые или согнутые ноги до уровня таза без раскачки.'),
+E('Подтягивания широким хватом',40,75,'lats,traps,shoulders','Хват заметно шире плеч, тяни локти вниз к рёбрам.'),
+E('Вис на перекладине',45,0,'forearms,lats,shoulders','Вис на прямых руках, плечи вниз. Тренирует хват и растягивает спину.')]},
+'Ноги со штангой':{c:'#8C3B2F',cat:'Со снарядами',sx:'m',lv:'Сложный',met:6,desc:'Тяжёлый день ног: фронтальные приседания, выпады, тяга и подъёмы на носки со штангой или гантелями.',ex:[
+EQ('Фронтальные приседания',50,75,'quads,glutes,abs','Гриф на передних дельтах, локти высоко. Садись глубоко, корпус вертикально.',.45,'штанга'),
+EQ('Выпады со штангой',50,60,'quads,glutes,hamstrings','Шаг вперёд, заднее колено почти к полу. Чередуй ноги.',.35,'штанга'),
+EQ('Румынская тяга',50,75,'hamstrings,glutes,lower_back','Ноги почти прямые, штанга скользит вдоль ног, таз назад.',.5,'штанга'),
+EQ('Болгарские сплит-приседания',50,60,'quads,glutes','Задняя нога на скамье. Опускайся вертикально. Смени ногу на половине времени.',.2,'гантель, каждая',1,4),
+EQ('Ягодичный мост со штангой',45,60,'glutes,hamstrings','Спина на скамье, гриф на тазу. Поднимай таз и сжимай ягодицы наверху.',.5,'штанга'),
+EQ('Подъёмы на носки со штангой',45,0,'calves','Гриф на плечах, поднимайся на носки максимально высоко, задержка на секунду.',.5,'штанга')]},
+'Ягодицы: мост и резинка':{c:'#B04A66',cat:'Тонус',sx:'f',lv:'Средний',met:4.5,desc:'Подтянутые ягодицы и бёдра: мостики, махи и приседания с мини-резинкой. Резинка по желанию, без неё тоже работает.',ex:[
+E('Ягодичный мост',50,20,'glutes,hamstrings','Лёжа, ступни у таза. Поднимай таз, сжимай ягодицы 2 секунды в верхней точке.'),
+E('Махи ногой назад',45,20,'glutes,hamstrings,lower_back','На четвереньках, поднимай согнутую ногу к потолку, пятка вверх. Смени ногу на половине времени.'),
+E('Приседания с резинкой',50,20,'quads,glutes','Резинка над коленями, колени не заваливай внутрь. Садись, как на стул.'),
+E('Боковые шаги с резинкой',45,20,'glutes,quads','Полуприсед, шагай в сторону, держа напряжение в резинке.'),
+E('Мост на одной ноге',45,20,'glutes,hamstrings,abs','Одна нога вытянута вверх, поднимай таз второй ногой. Смени ногу на половине времени.'),
+EQ('Приседания плие с гантелью',50,20,'quads,glutes,hamstrings','Ноги шире плеч, носки врозь. Гантель двумя руками внизу, садись глубоко.',.08,'гантель',.5,2),
+E('Подъём ноги в сторону',45,0,'glutes,obliques','Лёжа на боку, поднимай прямую ногу, носок на себя. Смени бок на половине времени.')]},
+'Грудь: упругость':{c:'#9A4F8C',cat:'Тонус',sx:'f',lv:'Средний',met:4.2,desc:'Укрепляет грудные мышцы и корсет вокруг груди. Облегчённые отжимания, разведения и жимы с лёгкими гантелями.',ex:[
+E('Отжимания с опорой',40,25,'chest,triceps,shoulders','Руки на устойчивой опоре (диван, стул), тело прямое. Опускай грудь к опоре.',6,'incline','×10'),
+E('Отжимания с колен',40,25,'chest,triceps,shoulders','Колени на полу, тело — прямая линия от плеч до колен. Грудь почти к полу.',6,'incline','×8'),
+EQ('Разведение гантелей лёжа',40,25,'chest,shoulders','Лёжа, руки с гантелями слегка согнуты. Разводи в стороны и своди над грудью.',.04,'гантель, каждая',.5,1),
+EQ('Жим гантелей лёжа',40,25,'chest,triceps,shoulders','Лёжа на полу или скамье, выжимай гантели вверх, локти под 45°.',.07,'гантель, каждая',.5,2),
+EQ('Пуловер с гантелью',40,25,'chest,lats,triceps','Гантель двумя руками, заводи за голову на согнутых руках и возвращай над грудью.',.08,'гантель',.5,2),
+E('Статический жим ладоней',30,0,'chest,shoulders','Ладони перед грудью, сильно дави одна в другую. Дыши ровно, держи напряжение.')]},
+'Поясница и кор':{c:'#3F7F7A',cat:'Тонус',sx:'f',lv:'Лёгкий',met:3.5,desc:'Здоровая поясница и ровная осанка: мягкое укрепление спины и пресса. Хорошо при сидячей работе.',ex:[
+E('Кошка-корова',45,10,'lower_back,abs','На четвереньках: плавный прогиб и округление спины в такт дыханию.'),
+E('Птица-собака',45,15,'lower_back,glutes,abs','На четвереньках, вытяни противоположные руку и ногу. Таз не качается. Смени сторону на половине времени.'),
+E('Супермен',40,15,'lower_back,glutes,traps','Лёжа на животе, одновременно поднимай руки и ноги, задержка на секунду.'),
+E('Лодочка',40,15,'lower_back,lats','Подними грудь и ноги, держи позу, шея нейтрально.'),
+E('Ягодичный мост',45,15,'glutes,hamstrings,lower_back','Поднимай таз, не прогибая поясницу, сжимай ягодицы.'),
+E('Мёртвый жук',45,15,'abs,obliques','Лёжа на спине, поочерёдно опускай противоположные руку и ногу, поясница прижата к полу.'),
+E('Боковая планка',40,0,'obliques,shoulders,glutes','Упор на предплечье, тело прямое. Смени сторону на половине времени.')]},
+'Ноги: тонус':{c:'#B0602E',cat:'Тонус',sx:'f',lv:'Средний',met:5,desc:'Стройные бёдра и икры: приседания, выпады назад, плие и подъёмы на носки. Без оборудования или с лёгкими гантелями.',ex:[
+E('Приседания',50,20,'quads,glutes,hamstrings','Ноги на ширине плеч, спина прямая, садись до параллели.'),
+E('Выпады назад',50,20,'quads,glutes,hamstrings','Шаг назад, оба колена под 90°. Чередуй ноги.'),
+E('Приседания плие',50,20,'quads,glutes','Ноги шире плеч, носки врозь, садись вниз и вверх без остановки.'),
+E('Махи ногой в сторону',45,20,'glutes,quads','Стоя, поднимай прямую ногу в сторону. Смени ногу на половине времени.'),
+E('Стульчик у стены',45,20,'quads,glutes','Колени под 90°, спина прижата к стене.'),
+E('Подъём на носки',45,0,'calves','Поднимайся высоко на носки, пауза наверху.')]},
+'Руки: тонус':{c:'#7F5AA8',cat:'Тонус',sx:'f',lv:'Лёгкий',met:3.8,desc:'Подтянутые руки и плечи с лёгкими гантелями (0,5–3 кг) или бутылками с водой.',ex:[
+EQ('Жим гантелей над головой',40,20,'shoulders,triceps','Стоя или сидя, выжимай гантели вверх, не прогибай поясницу.',.04,'гантель, каждая',.5,1),
+EQ('Разгибание из-за головы',40,20,'triceps','Гантель двумя руками, разгибай локти вверх, не разводя их.',.05,'гантель',.5,1),
+EQ('Сгибания на бицепс',40,20,'biceps,forearms','Локти прижаты, медленно сгибай и опускай.',.04,'гантель, каждая',.5,1),
+EQ('Подъём рук в стороны',40,20,'shoulders,traps','Руки слегка согнуты, поднимай до уровня плеч.',.03,'гантель, каждая',.5,1),
+E('Обратные отжимания от стула',40,20,'triceps,shoulders','Руки на стуле позади, опускай таз, сгибая локти. Лёгче: ноги согнуты.'),
+E('Отжимания с колен',40,0,'chest,triceps,shoulders','Колени на полу, тело — прямая линия. Грудь почти к полу.',6,'incline','×8')]}
+});
+/* ---------- v14: нагрузка под человека ---------- */
+const INT={easy:{t:'Лёгкая',k:.8},norm:{t:'Средняя',k:1.1},hard:{t:'Усиленная',k:1.5}};
+const cl=(v,a,b)=>Math.max(a,Math.min(b,v));
+const r5=v=>Math.max(5,Math.round(v/5)*5);
+function strength(){
+  const p=S.profile||{},f=p.sex==='f',a=+p.age||30,h=+p.height||(f?165:178),w=+S.weight||70;
+  let s=f?.78:1;
+  s*=a<18?.85:a<=40?1:a<=50?.93:a<=60?.85:.75;
+  const bmi=w/((h/100)**2);
+  s*=bmi>=32?.82:bmi>=28?.92:bmi<18.5?.9:1;
+  s*=cl(1+(h-(f?165:178))/250,.94,1.06);
+  return s;
+}
+const intenKey=()=>INT[S.set&&S.set.inten]?S.set.inten:'hard';
+const loadMul=()=>strength()*INT[intenKey()].k;
+function loadInfo(){
+  const M=loadMul(),g=S.profile&&S.profile.goal;
+  const rounds=cl(Math.round(M*2.6-.3),1,4);
+  const rest=Math.round((g==='gain'?1.3:g==='loss'?.7:1)*cl(1.2-.2*M,.8,1.3)*100)/100;
+  return {M,rounds,dm:cl(.85+.3*M,.9,1.3),rm:rest,between:g==='gain'?75:g==='loss'?40:55,reps:cl(M,.6,1.5),kg:cl(M/1.1,.6,1.2)};
+}
+function buildEx(w){
+  const I=loadInfo(),base=w.base,flex=w.cat==='Гибкость',fixed=!!w.fixed;
+  const R=flex?1:Math.max(1,I.rounds-(w.lv==='Лёгкий'&&I.rounds>1?1:0)),out=[];
+  for(let k=0;k<R;k++)base.forEach((e,i)=>{
+    const x=Object.assign({},e);
+    if(!flex&&!fixed){x.d=r5(e.d*I.dm);if(e.r>0)x.r=r5(e.r*I.rm)}
+    if(e.lab&&/^×\d+$/.test(e.lab))x.lab='×'+Math.max(3,Math.round(+e.lab.slice(1)*I.reps));
+    let t=e.t;
+    if(e.kgf){const st=e.step||2.5,v=Math.max(e.min||st,Math.round(S.weight*e.kgf*I.kg/st)*st);t+=` Ориентир веса: ~${String(v).replace('.',',')} кг (${e.unit}). Для начала возьми меньше и добавляй по мере уверенности.`}
+    x.tb=t;if(R>1)t=`Круг ${k+1} из ${R}. `+t;
+    x.t=t;
+    if(i===base.length-1){x.r=k<R-1?(flex?e.r:I.between):0}
+    out.push(x);
+  });
+  return out;
+}
+(function(){for(const n in WK){const w=WK[n];if(w.base)continue;w.base=w.ex;if(n==='Табата')w.fixed=true;
+  Object.defineProperty(w,'ex',{configurable:true,get(){const k=[S.profile&&S.profile.sex,S.profile&&S.profile.age,S.profile&&S.profile.height,S.weight,S.profile&&S.profile.goal,S.set&&S.set.inten].join('|');if(w._k!==k){w._k=k;w._v=buildEx(w)}return w._v}})}})();
+const vis=n=>{const w=WK[n],s=S.profile&&S.profile.sex;return !w.sx||!s||w.sx===s};
+let NAMES=Object.keys(WK);
+function refreshNames(){const l=Object.keys(WK).filter(vis);NAMES=l.filter(n=>WK[n].sx).concat(l.filter(n=>!WK[n].sx))}
+const cats=()=>['Все'].concat(['Силовые','Со снарядами','Тонус','Отжимания','Кардио','HIIT','Гибкость'].filter(c=>NAMES.some(n=>WK[n].cat===c)));
+function loadLine(){
+  const I=loadInfo(),p=S.profile,g=p&&p.goal==='gain'?'набор массы':p&&p.goal==='loss'?'похудение':'общая форма';
+  return `Нагрузка «${INT[intenKey()].t.toLowerCase()}»: ${I.rounds} ${I.rounds===1?'круг':I.rounds<5?'круга':'кругов'}, цель — ${g}${p?(p.sex==='f'?', женская программа':', мужская программа'):''}.`;
+}
 // цель из анкеты: какие программы подходят под неё (по ним выбирается тренировка дня)
 const GOALS={loss:{t:'Похудение',w:['Кардио','HIIT','Табата','Бокс-кардио','Ноги и ягодицы','Зарядка']},gain:{t:'Набор массы',w:['Силовая','Руки и плечи','Ноги и ягодицы','Пресс','Спина и осанка']}};
+GOALS.loss.m=['Гири: взрыв','Турник и брусья'];GOALS.loss.f=['Ягодицы: мост и резинка','Ноги: тонус'];
+GOALS.gain.m=['Штанга: база','Гантели: всё тело','Ноги со штангой','Турник и брусья','Гири: взрыв'];GOALS.gain.f=['Грудь: упругость','Поясница и кор','Ягодицы: мост и резинка','Руки: тонус','Ноги: тонус'];
 const LV={'Лёгкий':'#3F8A57','Средний':'#9A6B12','Сложный':'#B04A3A'};
 const REST_MET=1.5;
 
@@ -605,7 +730,7 @@ const fmt=s=>`${pad(Math.floor(s/60))}:${pad(s%60)}`;
 const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const S={tab:'home',filter:'Все',sheet:null,timer:null,prefill:null,
   schedule:store.get('skill.schedule',[]),log:store.get('skill.log',[]),weight:+store.get('skill.weight',70)||70,profile:store.get('skill.profile',null),
-  set:Object.assign({sound:true,music:true,vibe:true,voice:true,remind:false,remindT:'18:00'},store.get('skill.settings',{}))};
+  set:Object.assign({sound:true,music:true,vibe:true,voice:true,remind:false,remindT:'18:00',inten:'hard'},store.get('skill.settings',{}))};
 
 function weekStats(){const from=new Date();from.setDate(from.getDate()-6);const f=iso(from);let n=0,k=0,m=0;S.log.forEach(e=>{if(e.d>=f){n++;k+=e.kcal;m+=e.min}});return{n,k,m:Math.round(m)}}
 function streak(){const days=new Set(S.log.map(e=>e.d));const d=new Date();if(!days.has(iso(d)))d.setDate(d.getDate()-1);let n=0;while(days.has(iso(d))){n++;d.setDate(d.getDate()-1)}return n}
@@ -613,7 +738,7 @@ function streak(){const days=new Set(S.log.map(e=>e.d));const d=new Date();if(!d
 /* ---------- общие куски ---------- */
 const $=s=>document.querySelector(s);
 const tags=n=>`<div class="tags"><span class="tag" style="--c:var(--accent)">${WK[n].cat}</span><span class="tag" style="--c:${LV[WK[n].lv]}">${WK[n].lv}</span></div>`;
-const meta=n=>`<div class="meta num"><span>${wMin(n)} мин</span><span class="k">~${wKcal(n)} ккал</span><span>${WK[n].ex.length} упр.</span></div>`;
+const meta=n=>`<div class="meta num"><span>${wMin(n)} мин</span><span class="k">~${wKcal(n)} ккал</span><span>${WK[n].base.length} упр.${WK[n].ex.length>WK[n].base.length?' × '+(WK[n].ex.length/WK[n].base.length):''}</span></div>`;
 const ICON={
  home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
  work:'<path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/>',
@@ -876,7 +1001,7 @@ async function shareResult(){
 function vHome(){
   const d=new Date(), h=d.getHours();
   const greet=h<5?'Доброй ночи':h<12?'Доброе утро':h<18?'Добрый день':'Добрый вечер';
-  const g=S.profile&&GOALS[S.profile.goal],pool=g?g.w:NAMES;
+  const g=S.profile&&GOALS[S.profile.goal],pool=g?g.w.filter(vis).concat(g[S.profile.sex]||[]):NAMES;
   const n=pool[Math.floor(Date.now()/864e5)%pool.length], w=WK[n], ws=weekStats();
   return `<header><div class="eyebrow">${DOW[d.getDay()]}, ${d.getDate()} ${MON[d.getMonth()]}</div><h1 class="h1" style="margin-top:6px">${greet}!</h1></header>
   ${homeToday()}
@@ -892,9 +1017,10 @@ function vHome(){
    <div class="scroller">${NAMES.map(k=>`<button class="mini" style="--c:${WK[k].c}" data-action="open" data-arg="${k}"><i></i><b>${k}</b><span class="num">${wMin(k)} мин · ${wKcal(k)} ккал</span></button>`).join('')}</div></section>`;
 }
 function vWork(){
+  if(!cats().includes(S.filter))S.filter='Все';
   const list=NAMES.filter(n=>S.filter==='Все'||WK[n].cat===S.filter);
-  return `<header><h1 class="h1">Тренировки</h1><p class="dim" style="margin-top:6px">${NAMES.length} программ. Калории посчитаны для веса ${S.weight} кг.</p></header>
-  <div class="chips" role="group" aria-label="Категория">${CATS.map(c=>`<button class="chip" data-action="filter" data-arg="${c}" aria-pressed="${S.filter===c}">${c}</button>`).join('')}</div>
+  return `<header><h1 class="h1">Тренировки</h1><p class="dim" style="margin-top:6px">${NAMES.length} программ. ${loadLine()} Калории посчитаны для веса ${S.weight} кг.</p></header>
+  <div class="chips" role="group" aria-label="Категория">${cats().map(c=>`<button class="chip" data-action="filter" data-arg="${c}" aria-pressed="${S.filter===c}">${c}</button>`).join('')}</div>
   <div class="list">${list.map(n=>{const w=WK[n];return `<div class="wcard" role="button" tabindex="0" style="--c:${w.c}" data-action="open" data-arg="${n}">
     <div class="txt"><div class="name">${n}</div>${tags(n)}<p class="desc">${w.desc}</p></div>
     <div class="side">${body(wInt(n),w.c,false)}</div>
@@ -1008,6 +1134,7 @@ function renderSet(){
   el.innerHTML=`<div class="wrap"><div class="ov-head"><button class="icon-btn" data-action="setClose" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><div class="t">Настройки</div></div>
   <div class="ov-body"><h1 class="h1">Настройки</h1>
    <section class="panel"><h2 class="h2">Оформление</h2><div class="set-list"><div class="set-row"><div class="txt"><b id="sl-theme">Тёмная тема</b><span>Переключить светлую и тёмную цветовую схему</span></div><button class="sw" role="switch" aria-checked="${THEME==='dark'}" aria-labelledby="sl-theme" data-action="themeToggle"></button></div></div></section>
+   <section class="panel"><h2 class="h2">Нагрузка тренировок</h2><div class="seg" role="group" aria-label="Нагрузка">${Object.keys(INT).map(k=>`<button data-action="inten" data-arg="${k}" aria-pressed="${intenKey()===k}">${INT[k].t}</button>`).join('')}</div><p class="hint">${loadLine()} Нагрузка подстраивается под пол, возраст, рост, вес и цель из анкеты: у девушек программы мягче, у мужчин жёстче; при наборе массы отдых длиннее, при похудении короче.</p></section>
    <section class="panel"><h2 class="h2">Звук</h2><div class="set-list">
     ${sw('sound','Звуковые сигналы','Сигнал при старте и смене упражнения')}
     ${sw('music','Музыка','Фоновый трек во время тренировки')}
@@ -1053,10 +1180,10 @@ function openSheet(n){
   el.innerHTML=`<div class="wrap" style="--c:${w.c}"><div class="ov-head"><button class="icon-btn" data-action="closeSheet" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><div class="t">Описание</div></div>
   <div class="ov-body">
    <div style="display:flex;flex-direction:column;gap:10px"><h1 class="h1" style="color:${w.c}">${n}</h1>${tags(n)}<p class="dim">${w.desc}</p></div>
-   <div class="tiles num"><div class="tile"><b>${wMin(n)} мин</b><span>длительность</span></div><div class="tile" style="--c:var(--warn)"><b>~${wKcal(n)}</b><span>ккал при ${S.weight} кг</span></div><div class="tile"><b>${w.ex.length}</b><span>упражнений</span></div></div>
+   <div class="tiles num"><div class="tile"><b>${wMin(n)} мин</b><span>длительность</span></div><div class="tile" style="--c:var(--warn)"><b>~${wKcal(n)}</b><span>ккал при ${S.weight} кг</span></div><div class="tile"><b>${w.base.length}${w.ex.length>w.base.length?' × '+(w.ex.length/w.base.length):''}</b><span>${w.ex.length>w.base.length?'упражнений × кругов':'упражнений'}</span></div></div>
    <section class="panel"><h2 class="h2">Какие мышцы работают</h2>${body(inten,w.c,true)}
     <div class="load">${wMus(n).map(m=>`<span>${MUSCLES[m]}</span><div class="bar"><i style="width:${Math.round(inten[m]*100)}%"></i></div>`).join('')}</div></section>
-   <section><h2 class="h2" style="margin-bottom:6px">Упражнения</h2>${w.ex.map((e,i)=>`<div class="ex"><div class="n">${i+1}</div><div style="min-width:0"><b>${e.n}</b><div class="m num">${e.d} с${e.r?' · отдых '+e.r+' с':''} · ~${exK(w,e).toFixed(1)} ккал</div>${e.fig?`<div class="exfig">${pushFig(e.fig,e.lab)}</div>`:''}<p>${e.t}</p>${e.m.length?`<div class="tags">${e.m.map(m=>`<span class="tag" style="--c:${w.c}">${MUSCLES[m]}</span>`).join('')}</div>`:''}</div></div>`).join('')}</section>
+   <section><h2 class="h2" style="margin-bottom:6px">Упражнения</h2>${w.ex.length>w.base.length?`<p class="hint" style="margin:0 0 6px">${loadLine()} Отдых между кругами — ${w.ex[w.base.length-1].r} с. Время и повторы ниже — для первого круга.</p>`:''}${w.ex.slice(0,w.base.length).map((e,i)=>`<div class="ex"><div class="n">${i+1}</div><div style="min-width:0"><b>${e.n}</b><div class="m num">${e.d} с${e.r?' · отдых '+e.r+' с':''} · ~${exK(w,e).toFixed(1)} ккал</div>${e.fig?`<div class="exfig">${pushFig(e.fig,e.lab)}</div>`:''}<p>${e.tb||e.t}</p>${e.m.length?`<div class="tags">${e.m.map(m=>`<span class="tag" style="--c:${w.c}">${MUSCLES[m]}</span>`).join('')}</div>`:''}</div></div>`).join('')}</section>
   </div></div>
   <div class="actions" style="--c:${w.c}"><div class="in"><button class="btn" data-action="plan" data-arg="${n}">В план</button><button class="btn primary" data-action="start" data-arg="${n}">Начать тренировку</button></div></div>`;
   el.hidden=false;el.scrollTop=0;document.documentElement.style.overflow='hidden';
@@ -1182,7 +1309,7 @@ const A={
   if(!sex){toast('Выбери пол');return}
   const goal=(document.querySelector('input[name="f-goal"]:checked')||{}).value;
   if(!goal){toast('Выбери цель тренировок');return}
-  S.profile={height:Math.round(h),weight:w,age:Math.round(a),sex,goal};S.weight=w;logW(w);checkAch();
+  S.profile={height:Math.round(h),weight:w,age:Math.round(a),sex,goal};refreshNames();S.weight=w;logW(w);checkAch();
   store.set('skill.profile',S.profile);store.set('skill.weight',w);store.set('skill.onb','done');
   closeOnb();toast('Анкета сохранена');
  },
@@ -1193,7 +1320,7 @@ const A={
   if(!(w>=25&&w<=300)){toast('Введи вес от 25 до 300 кг');return}
   if(!(a>=10&&a<=100)){toast('Введи возраст от 10 до 100 лет');return}
   if(!sex){toast('Выбери пол');return}
-  S.profile=Object.assign({},S.profile,{height:Math.round(h),weight:w,age:Math.round(a),sex});S.weight=w;logW(w);checkAch();
+  S.profile=Object.assign({},S.profile,{height:Math.round(h),weight:w,age:Math.round(a),sex});refreshNames();S.weight=w;logW(w);checkAch();
   store.set('skill.profile',S.profile);store.set('skill.weight',w);if(!store.get('skill.onb',null))store.set('skill.onb','done');
   S.nut={act:$('#c-act').value,goal:$('#c-goal').value};store.set('skill.nut',S.nut);
   render();toast('Норма рассчитана');
@@ -1235,6 +1362,7 @@ const A={
  shareRes:shareResult,
  onbOpen(){openOnb()},
  setOpen:openSet,setClose:closeSet,
+ inten(k){if(!INT[k])return;S.set.inten=k;store.set('skill.settings',S.set);renderSet();toast('Нагрузка: '+INT[k].t.toLowerCase())},
  setToggle(k){S.set[k]=!S.set[k];store.set('skill.settings',S.set);music.sync();renderSet();if(k==='remind'&&S.set.remind)askNotif();if(k==='voice'&&S.set.voice)voice.say('Голосовые подсказки включены');
   const b=document.querySelector(`.sw[data-arg="${k}"]`);b&&b.focus();if(k==='sound'&&S.set.sound)beep()},
  tToggle,tSkip,tReset,tClose,tExit,tStay(){S.timer.confirm=false;renderTimer()}
@@ -1246,7 +1374,7 @@ document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.tar
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.timer&&S.timer.running)takeWake()});
 applyTheme(store.get('skill.theme','dark'));
 checkAch();checkRemind();setInterval(checkRemind,30000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkRemind()});
-render();
+refreshNames();render();
 /* после заставки всегда открываем окно с данными (заполнено сохранёнными значениями) */
 if(document.getElementById('splash'))document.addEventListener('splashdone',openOnb,{once:true});else openOnb();
 })();
