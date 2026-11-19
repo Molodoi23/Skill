@@ -304,6 +304,19 @@ input[type=range]{width:100%;accent-color:var(--accent);min-height:34px}
 .wchart{width:100%;height:auto;display:block}
 .wchart text{fill:var(--dim);font:700 10.5px var(--body)}
 .hint{font-size:12px;color:var(--dim)}
+.chips.wrapchips{flex-wrap:wrap;overflow:visible}
+svg.body .pick path{fill:transparent;stroke:rgba(255,255,255,.28);stroke-width:1.1;cursor:pointer;pointer-events:all;transition:fill .15s}
+svg.body .pick path:hover{fill:rgba(63,143,106,.28)}
+.pickwrap{max-width:340px;margin:0 auto}
+.seg.tm{display:grid;grid-template-columns:repeat(6,1fr)}
+.blist{display:flex;flex-direction:column;margin:6px 0 14px}
+.blist div{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-size:14px}
+.blist div:first-child{border-top:0}
+.blist span{color:var(--dim);font-size:12px;text-align:right}
+.vlink{display:inline-flex;align-items:center;margin-top:8px;font-size:13px;font-weight:800;color:var(--accent2)}
+video.demo{width:100%;max-width:360px;border-radius:14px;margin-top:10px;background:#000}
+.wcard.cons{grid-template-columns:1fr;border-color:var(--accent);background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 14%,var(--surface)),var(--surface))}
+.wcard.cons .name{color:var(--accent)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 <noscript><style>#splash{display:none}</style></noscript>
@@ -533,10 +546,10 @@ function loadInfo(){
 }
 function buildEx(w){
   const I=loadInfo(),base=w.base,flex=w.cat==='Гибкость',fixed=!!w.fixed;
-  const R=flex?1:Math.max(1,I.rounds-(w.lv==='Лёгкий'&&I.rounds>1?1:0)),out=[];
+  const R=w.rounds||(flex?1:Math.max(1,I.rounds-(w.lv==='Лёгкий'&&I.rounds>1?1:0)));let out=[];
   for(let k=0;k<R;k++)base.forEach((e,i)=>{
     const x=Object.assign({},e);
-    if(!flex&&!fixed){x.d=r5(e.d*I.dm);if(e.r>0)x.r=r5(e.r*I.rm)}
+    if(!flex&&!fixed&&!w.rounds){x.d=r5(e.d*I.dm);if(e.r>0)x.r=r5(e.r*I.rm)}
     if(e.lab&&/^×\d+$/.test(e.lab))x.lab='×'+Math.max(3,Math.round(+e.lab.slice(1)*I.reps));
     let t=e.t;
     if(e.kgf){const st=e.step||2.5,v=Math.max(e.min||st,Math.round(S.weight*e.kgf*I.kg/st)*st);t+=` Ориентир веса: ~${String(v).replace('.',',')} кг (${e.unit}). Для начала возьми меньше и добавляй по мере уверенности.`}
@@ -545,14 +558,19 @@ function buildEx(w){
     if(i===base.length-1){x.r=k<R-1?(flex?e.r:I.between):0}
     out.push(x);
   });
+  if(w.rounds){if(w.post&&w.post.length)out[out.length-1].r=20;const cp=a=>a.map(e=>Object.assign({},e,{tb:e.t}));out=cp(w.pre||[]).concat(out,cp(w.post||[]))}
   return out;
 }
-(function(){for(const n in WK){const w=WK[n];if(w.base)continue;w.base=w.ex;if(n==='Табата')w.fixed=true;
-  Object.defineProperty(w,'ex',{configurable:true,get(){const k=[S.profile&&S.profile.sex,S.profile&&S.profile.age,S.profile&&S.profile.height,S.weight,S.profile&&S.profile.goal,S.set&&S.set.inten].join('|');if(w._k!==k){w._k=k;w._v=buildEx(w)}return w._v}})}})();
+function inst(n){const w=WK[n];if(w.base)return;w.base=w.ex;if(n==='Табата')w.fixed=true;
+  Object.defineProperty(w,'ex',{configurable:true,get(){const k=[S.profile&&S.profile.sex,S.profile&&S.profile.age,S.profile&&S.profile.height,S.weight,S.profile&&S.profile.goal,S.set&&S.set.inten].join('|');if(w._k!==k){w._k=k;w._v=buildEx(w)}return w._v}})}
+for(const n in WK)inst(n);
+const rndOf=w=>w.rounds||w.ex.length/w.base.length;
+const firstRound=w=>w.rounds?(w.pre||[]).concat(w.ex.slice((w.pre||[]).length,(w.pre||[]).length+w.base.length),w.post||[]):w.ex.slice(0,w.base.length);
 const vis=n=>{const w=WK[n],s=S.profile&&S.profile.sex;return !w.sx||!s||w.sx===s};
 let NAMES=Object.keys(WK);
 function refreshNames(){const l=Object.keys(WK).filter(vis);NAMES=l.filter(n=>WK[n].sx).concat(l.filter(n=>!WK[n].sx))}
-const cats=()=>['Все'].concat(['Силовые','Со снарядами','Тонус','Отжимания','Кардио','HIIT','Гибкость'].filter(c=>NAMES.some(n=>WK[n].cat===c)));
+function keepScroll(){const y=window.scrollY;render();window.scrollTo(0,y)}
+const cats=()=>['Все'].concat(['Своя','Силовые','Со снарядами','Тонус','Отжимания','Кардио','HIIT','Гибкость'].filter(c=>NAMES.some(n=>WK[n].cat===c)));
 function loadLine(){
   const I=loadInfo(),p=S.profile,g=p&&p.goal==='gain'?'набор массы':p&&p.goal==='loss'?'похудение':'общая форма';
   return `Нагрузка «${INT[intenKey()].t.toLowerCase()}»: ${I.rounds} ${I.rounds===1?'круг':I.rounds<5?'круга':'кругов'}, цель — ${g}${p?(p.sex==='f'?', женская программа':', мужская программа'):''}.`;
@@ -738,10 +756,11 @@ function streak(){const days=new Set(S.log.map(e=>e.d));const d=new Date();if(!d
 /* ---------- общие куски ---------- */
 const $=s=>document.querySelector(s);
 const tags=n=>`<div class="tags"><span class="tag" style="--c:var(--accent)">${WK[n].cat}</span><span class="tag" style="--c:${LV[WK[n].lv]}">${WK[n].lv}</span></div>`;
-const meta=n=>`<div class="meta num"><span>${wMin(n)} мин</span><span class="k">~${wKcal(n)} ккал</span><span>${WK[n].base.length} упр.${WK[n].ex.length>WK[n].base.length?' × '+(WK[n].ex.length/WK[n].base.length):''}</span></div>`;
+const meta=n=>`<div class="meta num"><span>${wMin(n)} мин</span><span class="k">~${wKcal(n)} ккал</span><span>${WK[n].base.length} упр.${rndOf(WK[n])>1?' × '+rndOf(WK[n]):''}</span></div>`;
 const ICON={
  home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
  work:'<path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/>',
+ build:'<circle cx="12" cy="5" r="2.3"/><path d="M12 8v6M7 10l5-2 5 2M9 21l3-7 3 7"/>',
  plan:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>',
  prog:'<path d="M4 20V11M10 20V4M16 20v-6M22 20H2"/>',
  cal:'<path d="M12 8c-2.2-2.2-7.5-1.2-7.5 4 0 4 3 9 5.3 9 1 0 1.6-.6 2.2-.6s1.2.6 2.2.6c2.3 0 5.3-5 5.3-9 0-5.2-5.3-6.2-7.5-4z"/><path d="M12 8c0-2 1-3.6 3-4.5"/>'};
@@ -997,6 +1016,202 @@ async function shareResult(){
   }catch(e){if(e&&e.name==='AbortError')return;toast('Не удалось создать картинку')}
 }
 
+/* ---------- v15: база упражнений для конструктора ---------- */
+/* id|название|основные мышцы|вспомогательные|оборудование|уровень 1-3|техника|вес (доля от массы тела)|единица|шаг|мин */
+const XD_RAW=`
+push|Отжимания|chest|triceps,shoulders|bw|2|Ладони под плечами, тело прямое. Опускай грудь почти до пола, локти под 45°.
+push-knee|Отжимания с колен|chest|triceps,shoulders|bw|1|Колени на полу, тело прямое от плеч до колен. Грудь почти касается пола.
+push-wide|Широкие отжимания|chest|shoulders|bw|2|Ладони заметно шире плеч. Нагрузка уходит на грудь. Опускайся без боли в плечах.
+push-decl|Отжимания, ноги на возвышении|chest|shoulders,triceps|bench|3|Ступни на стуле или диване. Нагрузка смещается на верх груди и плечи.
+bench-db|Жим гантелей лёжа|chest|triceps,shoulders|db|2|Лёжа на скамье или полу, выжимай гантели вверх, локти под 45°.|.2|гантель, каждая|1|4
+fly-db|Разведение гантелей лёжа|chest|shoulders|db|2|Руки слегка согнуты, разводи в стороны и своди над грудью.|.1|гантель, каждая|1|2
+pull-db|Пуловер с гантелью|chest|lats,triceps|db|2|Гантель двумя руками, заводи за голову на согнутых руках и возвращай над грудью.|.2|гантель|1|3
+bench-bb|Жим штанги лёжа|chest|triceps,shoulders|bb,bench|3|Лопатки сведены, ступни на полу. Опускай гриф к низу груди и выжимай. Лучше со страховкой.|.5|штанга|2.5|20
+fly-band|Сведение рук с резинкой|chest|shoulders|band|1|Резинка за спиной, своди вытянутые руки перед грудью.
+dips-ch|Отжимания на брусьях, грудь|chest|triceps,shoulders|bar|3|Корпус наклонён вперёд, локти в стороны. Опускайся до угла 90° в плечах.
+diamond|Алмазные отжимания|triceps|chest,shoulders|bw|3|Пальцы образуют ромб под грудью, локти вдоль тела.
+push-narrow|Узкие отжимания|triceps|chest,shoulders|bw|2|Ладони чуть уже плеч, локти прижаты к корпусу.
+pike|Пайк-отжимания|shoulders|triceps,traps|bw|2|Таз высоко, тело буквой V. Сгибай локти, опуская голову между рук.
+ohp-db|Жим гантелей над головой|shoulders|triceps,traps|db|2|Выжимай гантели вверх, не прогибая поясницу.|.18|гантель, каждая|1|3
+raise-db|Подъём рук в стороны|shoulders|traps|db|1|Руки слегка согнуты, поднимай до уровня плеч без раскачки.|.08|гантель, каждая|.5|1
+ohp-bb|Жим штанги стоя|shoulders|triceps,traps|bb|3|Гриф у ключиц, пресс и ягодицы напряжены. Выжимай над головой.|.35|штанга|2.5|15
+push-press-kb|Швунг гири|shoulders|quads,triceps|kb|3|Лёгкий присед и толчок ногами, выжимай гирю над головой.|.2|гиря|4|8
+rear-db|Разведение в наклоне|shoulders|traps,lats|db|2|Наклон корпуса, разводи руки в стороны, сводя лопатки.|.08|гантель, каждая|.5|1
+raise-band|Подъём рук с резинкой|shoulders|traps|band|1|Наступи на резинку и поднимай руки в стороны до уровня плеч.
+shrug-db|Шраги с гантелями|traps|forearms|db|1|Поднимай плечи к ушам, задержка на секунду, без вращений.|.25|гантель, каждая|1|4
+shrug-bb|Шраги со штангой|traps|forearms|bb|2|Гриф перед бёдрами, плечи вверх и пауза. Руки прямые.|.5|штанга|2.5|20
+upright-db|Тяга к подбородку|traps|shoulders|db|2|Гантели вдоль тела, тяни локти вверх до уровня плеч.|.1|гантель, каждая|.5|2
+y-raise|Y-подъёмы лёжа|traps|shoulders,lower_back|bw|1|Лёжа на животе, поднимай руки буквой Y, большие пальцы вверх.
+pullup|Подтягивания|lats|biceps,forearms,traps|bar|3|Хват чуть шире плеч, подтягивайся грудью к перекладине, опускайся полностью.
+chinup|Подтягивания обратным хватом|lats|biceps,forearms|bar|3|Ладони к себе, хват на ширине плеч. Больше работает бицепс.
+row-db|Тяга гантели в наклоне|lats|biceps,traps|db|2|Одна рука и колено на опоре, тяни гантель к поясу, сводя лопатки.|.25|гантель|1|5
+row-bb|Тяга штанги в наклоне|lats|biceps,traps,lower_back|bb|3|Корпус почти параллельно полу, тяни гриф к низу живота.|.45|штанга|2.5|15
+row-band|Тяга резинки к поясу|lats|biceps,traps|band|1|Сидя, ноги вперёд, тяни резинку к поясу, сводя лопатки.
+row-inv|Австралийские подтягивания|lats|biceps,traps|bench|2|Лёжа под крепким столом или низкой перекладиной, подтягивай грудь к опоре.
+row-kb|Тяга гири в наклоне|lats|biceps,traps|kb|2|Наклон, тяни гирю к поясу, локоть вдоль тела.|.25|гиря|4|8
+curl-db|Сгибания на бицепс|biceps|forearms|db|1|Локти прижаты, не раскачивайся, опускай медленно.|.12|гантель, каждая|.5|3
+hammer-db|Молотковые сгибания|biceps|forearms|db|1|Нейтральный хват, ладони смотрят друг на друга.|.12|гантель, каждая|.5|3
+curl-bb|Подъём штанги на бицепс|biceps|forearms|bb|2|Локти у корпуса, опускай гриф медленно, 3 секунды.|.25|штанга|2.5|10
+curl-band|Сгибания с резинкой|biceps|forearms|band|1|Наступи на резинку, сгибай руки без раскачки.
+conc-db|Концентрированные сгибания|biceps|forearms|db|2|Сидя, локоть упирается в бедро. Сгибай и опускай медленно, смени руку на половине времени.|.12|гантель|.5|3
+dip-bench|Обратные отжимания от стула|triceps|shoulders,chest|bench|1|Руки на стуле позади, опускай таз, сгибая локти.
+skull-bb|Французский жим|triceps|shoulders|bb|2|Лёжа, сгибай только локти, опуская гриф ко лбу.|.2|штанга|2.5|10
+ext-db|Разгибания из-за головы|triceps||db|1|Гантель двумя руками за головой, разгибай локти вверх.|.15|гантель|.5|3
+ext-band|Разгибания с резинкой вниз|triceps||band|1|Резинка закреплена сверху, разгибай локти вниз, прижав их к корпусу.
+dips-tri|Брусья на трицепс|triceps|chest|bar|3|Корпус прямо, локти назад, опускайся до угла 90°.
+wrist-db|Сгибания запястий|forearms||db|1|Предплечья на бедре, сгибай и разгибай кисти. Лёгкий вес, много повторов.|.06|гантель|.5|1
+farmer|Ходьба фермера|forearms|traps,abs|db|1|Две тяжёлые гантели в руках, ходи ровно, плечи вниз.|.25|гантель, каждая|1|4
+farmer-kb|Ходьба фермера с гирями|forearms|traps,abs|kb|1|Две гири в руках, ходи ровно, пресс напряжён.|.25|гиря, каждая|4|8
+hang|Вис на перекладине|forearms|lats,shoulders|bar|1|Вис на прямых руках, плечи вниз. Тренирует хват и растягивает спину.
+rcurl-bb|Обратные сгибания|forearms|biceps|bb|2|Хват сверху, локти у корпуса. Сгибай руки, держа кисти ровно.|.15|штанга|2.5|10
+crunch|Скручивания|abs|obliques|bw|1|Лёжа, ноги согнуты. Поднимай лопатки, не тяни шею руками.
+legraise|Подъём ног лёжа|abs|quads|bw|2|Поднимай прямые ноги до 90°, опускай медленно, поясница прижата.
+plank|Планка|abs|shoulders,lower_back|bw|1|Упор на предплечья, тело ровное. Напряги пресс и ягодицы.
+hangleg|Подъём ног в висе|abs|obliques,forearms|bar|3|Вис на перекладине, поднимай ноги до уровня таза без раскачки.
+deadbug|Мёртвый жук|abs|obliques|bw|1|Лёжа на спине, опускай противоположные руку и ногу, поясница прижата к полу.
+crunch-db|Скручивания с гантелью|abs||db|2|Гантель у груди, поднимай корпус, выдыхая вверху.|.1|гантель|.5|2
+climber|Скалолаз|abs|shoulders,quads|bw|2|В упоре лёжа быстро подтягивай колени к груди.
+vup|Складной нож|abs|quads|bw|3|Одновременно поднимай руки и ноги, образуя букву V.
+sideplank|Боковая планка|obliques|shoulders,glutes|bw|2|Упор на локоть, таз вверх. Смени сторону на половине времени.
+russian|Русские скручивания|obliques|abs|bw|2|Сидя, корпус назад, поворачивай корпус из стороны в сторону.
+russian-db|Русские скручивания с гантелью|obliques|abs|db|2|То же, но с гантелью в руках.|.1|гантель|.5|2
+bike|Велосипед|obliques|abs|bw|1|Локоть тянется к противоположному колену.
+bend-db|Наклоны в сторону с гантелью|obliques||db|1|Гантель в одной руке, наклоняйся в сторону и возвращайся. Смени руку на половине времени.|.15|гантель|.5|3
+chop-band|Дровосек с резинкой|obliques|abs,shoulders|band|2|Резинка закреплена сверху, тяни по диагонали вниз с поворотом корпуса.
+superman|Супермен|lower_back|glutes|bw|1|Лёжа на животе, одновременно поднимай руки и ноги, задержка на секунду.
+boat|Лодочка|lower_back|lats|bw|1|Подними грудь и ноги, держи позу, шея нейтрально.
+birddog|Птица-собака|lower_back|glutes,abs|bw|1|На четвереньках, вытяни противоположные руку и ногу. Таз не качается.
+deadlift-bb|Становая тяга|lower_back|hamstrings,glutes,traps|bb|3|Гриф у голеней, спина ровная, таз назад. Вставай, разгибая бёдра и колени.|.7|штанга|2.5|20
+gm-db|Наклоны с гантелью «доброе утро»|lower_back|hamstrings,glutes|db|2|Гантель у груди, наклон с прямой спиной, таз назад.|.15|гантель|.5|3
+bridge|Ягодичный мост|glutes|hamstrings|bw|1|Лёжа, ступни у таза. Поднимай таз, сжимай ягодицы 2 секунды наверху.
+bridge1|Мост на одной ноге|glutes|hamstrings|bw|2|Одна нога вытянута вверх, поднимай таз второй ногой. Смени ногу на половине времени.
+kickback|Махи ногой назад|glutes|hamstrings|bw|1|На четвереньках, поднимай согнутую ногу к потолку. Смени ногу на половине времени.
+bridge-bb|Ягодичный мост со штангой|glutes|hamstrings|bb|3|Гриф на тазу, поднимай таз и сжимай ягодицы наверху.|.5|штанга|2.5|20
+bridge-db|Мост с гантелью|glutes|hamstrings|db|2|Гантель на тазу, поднимай таз, сжимая ягодицы.|.25|гантель|1|4
+squat-band|Приседания с резинкой|glutes|quads|band|1|Резинка над коленями, колени не заваливай внутрь.
+side-band|Боковые шаги с резинкой|glutes|quads|band|1|Полуприсед, шагай в сторону, держа напряжение в резинке.
+swing-kb|Махи гирей|glutes|hamstrings,lower_back,shoulders|kb|3|Гиря между ног, таз резко вперёд, руки лишь направляют, до уровня груди.|.25|гиря|4|8
+sumo-kb|Приседания сумо с гирей|glutes|quads|kb|2|Ноги шире плеч, гиря между ног. Садись глубоко.|.25|гиря|4|8
+abduct|Отведение ноги в сторону|glutes|obliques|bw|1|Лёжа на боку, поднимай прямую ногу, носок на себя. Смени бок на половине времени.
+stepup|Подъёмы на скамью|glutes|quads|bench|2|Шагай на устойчивую опору, толкаясь пяткой. Смени ногу на половине времени.
+squat|Приседания|quads|glutes,hamstrings|bw|1|Ноги на ширине плеч, спина прямая. Садись до параллели бёдер с полом.
+lunge|Выпады|quads|glutes,hamstrings|bw|1|Шаг вперёд, оба колена под 90°. Чередуй ноги.
+bulg|Болгарские выпады|quads|glutes|bench|2|Задняя нога на опоре. Опускайся вертикально вниз. Смени ногу на половине времени.
+squat-bb|Приседания со штангой|quads|glutes,hamstrings,lower_back|bb|3|Штанга на трапециях, спина прямая. Садись до параллели. Первый раз бери легче, страхуйся.|.6|штанга|2.5|20
+front-bb|Фронтальные приседания|quads|glutes,abs|bb|3|Гриф на передних дельтах, локти высоко. Садись глубоко, корпус вертикально.|.45|штанга|2.5|20
+goblet|Приседания «гоблет»|quads|glutes,abs|db|2|Гантель у груди двумя руками. Садись глубоко, спина прямая.|.3|гантель|1|6
+goblet-kb|Приседания с гирей у груди|quads|glutes,abs|kb|2|Гиря у груди, локти вниз, садись глубоко.|.25|гиря|4|8
+lunge-db|Выпады с гантелями|quads|glutes,hamstrings|db|2|Гантели в руках, шаг вперёд, колени под 90°.|.15|гантель, каждая|1|3
+wallsit|Стульчик у стены|quads|glutes|bw|1|Спина у стены, колени под 90°. Держи позу.
+jumpsquat|Прыжки в приседе|quads|glutes,calves|bw|3|Присядь и взрывным движением выпрыгни вверх, мягко приземляйся.
+pistol|Приседания с опорой на одной ноге|quads|glutes|bw|3|Держись за опору, приседай на одной ноге. Смени ногу на половине времени.
+rdl-db|Румынская тяга с гантелями|hamstrings|glutes,lower_back|db|2|Ноги слегка согнуты, гантели скользят вдоль бёдер, таз назад.|.22|гантель, каждая|1|4
+rdl-bb|Румынская тяга со штангой|hamstrings|glutes,lower_back|bb|3|Ноги почти прямые, гриф скользит вдоль ног, таз назад.|.5|штанга|2.5|20
+rdl-kb|Румынская тяга с гирей|hamstrings|glutes,lower_back|kb|2|Гиря в руках, наклон с прямой спиной, таз назад.|.25|гиря|4|8
+curl-leg|Сгибание ног скольжением|hamstrings|glutes|bw|2|Лёжа, пятки на полотенце на гладком полу, подтягивай пятки к тазу.
+bridge-heel|Мост с пятками на опоре|hamstrings|glutes|bench|2|Пятки на стуле, поднимай таз, напрягая заднюю поверхность бёдер.
+rdl-1|Тяга на одной ноге|hamstrings|glutes,abs|bw|1|Наклон корпуса вперёд, нога назад, спина прямая. Смени ногу на половине времени.
+calf|Подъём на носки|calves||bw|1|Поднимайся высоко на носки, пауза наверху.
+calf-db|Подъём на носки с гантелями|calves||db|1|Гантели в руках, поднимайся на носки, держи секунду.|.25|гантель, каждая|1|4
+calf-bb|Подъёмы на носки со штангой|calves||bb|2|Гриф на плечах, поднимайся на носки максимально высоко.|.5|штанга|2.5|20
+calf-1|Подъём на носки на одной ноге|calves||bw|2|Держись за опору, поднимайся на носок одной ноги. Смени ногу на половине времени.
+rope|Прыжки на скакалке|calves|quads,shoulders|rope|2|Прыгай на носках, кисти вращают скакалку.
+burpee|Бёрпи|chest,quads|abs,shoulders|bw|3|Присед, упор лёжа, отжимание, прыжок вверх.
+jack|Джампинг Джек|shoulders,calves|quads|bw|1|Прыжком разводи ноги и руки в стороны, затем возвращайся.
+run|Бег на месте|quads,calves|hamstrings|bw|1|Быстрый бег на месте с активной работой рук.
+knees|Высокие колени|quads,abs|calves|bw|1|Бег на месте, колени до уровня таза.
+tgu|Турецкий подъём|shoulders,abs|obliques,glutes|kb|3|Медленно, из положения лёжа в стойку, гиря на вытянутой руке.|.15|гиря|4|8
+snatch-kb|Рывок гири|shoulders,glutes|lats,forearms|kb|3|Мах вверх по короткой траектории, гиря ложится на предплечье. Смени руку на половине времени.|.2|гиря|4|8
+`;
+const XD=XD_RAW.trim().split('\n').map(l=>{const a=l.split('|');
+  const sp=s=>s?s.split(','):[];
+  return {id:a[0],n:a[1],prim:sp(a[2]),sec:sp(a[3]),eq:sp(a[4]),lvl:+a[5],t:a[6],kgf:a[7]?+a[7]:0,unit:a[8],step:a[9]?+a[9]:2.5,min:a[10]?+a[10]:2}});
+const EQN={db:'Гантели',bb:'Штанга',kb:'Гиря',bar:'Турник / брусья',band:'Резинка',bench:'Скамья / стул',rope:'Скакалка'};
+const TIMES=[10,15,20,30,45,60];
+/* ---------- v15: конструктор тренировок ---------- */
+S.build=Object.assign({sel:[],eq:[],time:20,seed:0},store.get('skill.build',{}));
+const saveBuild=()=>store.set('skill.build',{sel:S.build.sel,eq:S.build.eq,time:S.build.time});
+const CUSTOM='Моя тренировка';
+const slug=s=>encodeURIComponent(s+' техника выполнения упражнения');
+const ytLink=n=>`<a class="vlink" href="https://www.youtube.com/results?search_query=${slug(n)}" target="_blank" rel="noopener">▶ Смотреть технику</a>`;
+const vidTag=e=>e.id?`<video class="demo" src="video/${e.id}.mp4" controls loop muted playsinline preload="metadata" onerror="this.remove()"></video>`:'';
+function pickList(sel,eq,time,seed){
+  const have=new Set(['bw',...eq]),pool=XD.filter(x=>x.eq.every(c=>have.has(c)));
+  const I=loadInfo(),lv=I.M<.85?1:I.M<1.25?2:3;
+  const targets=sel.length?sel:['chest','lats','quads','glutes','shoulders','abs','hamstrings','biceps'];
+  const n=cl(sel.length?sel.length*2+1:8,4,8);
+  let rnd=(seed+1)*9301;const rand=()=>{rnd=(rnd*49297+233280)%233280;return rnd/233280};
+  const used=new Set(),out=[];
+  const score=(x,t)=>{
+    let v=x.prim.includes(t)?5:x.sec.includes(t)?2:-100;if(v<0)return v;
+    v+=x.prim.filter(m=>targets.includes(m)&&m!==t).length*.8;
+    if(x.eq.some(c=>c!=='bw'&&have.has(c)))v+=1.6;
+    v-=Math.abs(x.lvl-lv)*1.2;v+=rand()*1.4;return v;
+  };
+  let guard=0;
+  while(out.length<n&&guard++<60){
+    const t=targets[out.length%targets.length];
+    const c=pool.filter(x=>!used.has(x.id)).map(x=>[score(x,t),x]).filter(a=>a[0]>0).sort((a,b)=>b[0]-a[0])[0];
+    if(c){used.add(c[1].id);out.push(c[1])}
+    else if(!pool.some(x=>!used.has(x.id)&&targets.some(m=>x.prim.includes(m)||x.sec.includes(m))))break;
+    else targets.push(targets.shift());
+  }
+  const weak=['abs','obliques','lower_back','calves'],heavy=x=>x.eq.includes('bb')?0:x.eq.includes('kb')?1:x.eq.includes('bar')?2:x.eq.includes('db')?3:4;
+  out.sort((a,b)=>(weak.includes(a.prim[0])?10:0)+heavy(a)-((weak.includes(b.prim[0])?10:0)+heavy(b)));
+  return out;
+}
+function buildCustom(ids,R,time,sel){
+  const list=ids.map(id=>XD.find(x=>x.id===id)).filter(Boolean);if(!list.length)return null;
+  const base=list.map(x=>{const heavy=x.eq.includes('bb'),mid=x.eq.some(c=>['db','kb','bar'].includes(c));
+    const e=E(x.n,heavy?50:45,heavy?75:mid?50:30,x.prim.concat(x.sec).join(','),x.t);
+    return Object.assign(e,{id:x.id,kgf:x.kgf,unit:x.unit,step:x.step,min:x.min})});
+  const pre=time>=20?[E('Разминка',60,0,'','Круговые движения плечами и тазом, наклоны, шаги на месте. Подготовь суставы и подними пульс.')]:[];
+  const post=time>=20?[E('Растяжка',60,0,'','Мягко потяни мышцы, которые работали. Дыши ровно, не выпрыгивай из комфорта.')]:[];
+  const names=(sel.length?sel.map(m=>MUSCLES[m]):['всё тело']).join(', ');
+  const w={c:'#3F8F6A',cat:'Своя',lv:R>=3?'Сложный':R===2?'Средний':'Лёгкий',met:5.2,custom:true,rounds:R,pre,post,sel,
+    desc:`Подобрано под тебя: ${names}. ${list.length} упражнений × ${R} ${R===1?'круг':R<5?'круга':'кругов'}, около ${time} минут.${list.some(x=>x.kgf)?' Ориентиры веса считаются по твоему весу.':''}`,ex:base};
+  w.c0=w.c;w.c=THEME==='dark'?blend(w.c0,'#FFFFFF',.42):w.c0;
+  WK[CUSTOM]=w;inst(CUSTOM);return w;
+}
+function genWorkout(){
+  const {sel,eq,time}=S.build,ids=pickList(sel,eq,time,S.build.seed).map(x=>x.id);
+  if(!ids.length)return false;
+  const n=ids.length,I=loadInfo(),B=time*60-(time>=20?120:0);
+  const R=cl(Math.round(B/(n*80)),1,Math.max(1,I.rounds+1));
+  buildCustom(ids,R,time,sel);store.set('skill.gen',{ids,R,time,sel});refreshNames();return true;
+}
+function restoreGen(){const g=store.get('skill.gen',null);if(g&&g.ids)try{buildCustom(g.ids,g.R,g.time,g.sel||[])}catch(e){}}
+function bodyPick(){
+  const inten={};S.build.sel.forEach(m=>inten[m]=1);
+  let svg=body(inten,'#3F8F6A',true),hit='';
+  const mir=c=>`transform="matrix(-1 0 0 1 ${2*c} 0)"`;
+  const put=(sh,c)=>{for(const m in sh)sh[m].forEach(d0=>{const d=sm(d0);hit+=`<path d="${d}" data-action="bmus" data-arg="${m}"><title>${MUSCLES[m]}</title></path><path d="${d}" ${mir(c)} data-action="bmus" data-arg="${m}"><title>${MUSCLES[m]}</title></path>`})};
+  put(AF,162);put(AB,512);
+  return svg.replace('</svg>',`<g class="pick">${hit}</g></svg>`);
+}
+function vBuild(){
+  const b=S.build,g=WK[CUSTOM],sel=b.sel;
+  const chips=Object.keys(MUSCLES).map(m=>`<button class="chip" data-action="bmus" data-arg="${m}" aria-pressed="${sel.includes(m)}">${MUSCLES[m]}</button>`).join('');
+  const eqs=Object.keys(EQN).map(k=>`<button class="chip" data-action="beq" data-arg="${k}" aria-pressed="${b.eq.includes(k)}">${EQN[k]}</button>`).join('');
+  const tms=TIMES.map(t=>`<button data-action="btime" data-arg="${t}" aria-pressed="${b.time===t}">${t}</button>`).join('');
+  const res=g?`<section class="panel" id="b-res" style="--c:${g.c}"><div class="eyebrow">Твоя тренировка</div><h2 class="h2" style="color:${g.c};margin-top:4px">${(g.sel.length?g.sel.map(m=>MUSCLES[m]).join(' · '):'Всё тело')}</h2>
+    <p class="dim" style="font-size:14px;margin:6px 0 10px">${g.desc}</p>${meta(CUSTOM)}
+    <div style="max-width:300px;width:100%;margin:6px auto">${body(wInt(CUSTOM),g.c,true)}</div>
+    <div class="blist">${g.base.map((e,i)=>`<div><b>${i+1}. ${e.n}</b><span>${e.m.slice(0,2).map(m=>MUSCLES[m]).join(', ')}</span></div>`).join('')}</div>
+    <div class="row"><button class="btn primary grow" style="--c:${g.c}" data-action="start" data-arg="${CUSTOM}">Начать</button><button class="btn" data-action="open" data-arg="${CUSTOM}">Подробнее</button></div>
+    <div class="row" style="margin-top:8px"><button class="btn grow" data-action="bgen">Другой вариант</button><button class="btn grow" data-action="plan" data-arg="${CUSTOM}">В план</button></div></section>`:'';
+  return `<button class="btn small" style="align-self:flex-start" data-action="wback">← К тренировкам</button><header><h1 class="h1">Конструктор</h1><p class="dim" style="margin-top:6px">Выбери мышцы на фигуре, укажи, что у тебя есть, и время. Я подберу упражнения под твою нагрузку (${INT[intenKey()].t.toLowerCase()}).</p></header>
+  <section class="panel"><h2 class="h2">1. Мышцы</h2><p class="hint" style="margin:2px 0 8px">Нажимай на мышцы на фигуре спереди и сзади. Ничего не выбрано — тренировка на всё тело.</p>
+   <div class="pickwrap">${bodyPick()}</div>
+   <div class="chips wrapchips" style="margin-top:12px" role="group" aria-label="Мышцы">${chips}</div>
+   <button class="btn small" style="margin-top:10px" data-action="bclear" ${sel.length?'':'disabled'}>Сбросить выбор</button></section>
+  <section class="panel"><h2 class="h2">2. Что есть под рукой</h2><p class="hint" style="margin:2px 0 8px">Упражнения со своим весом доступны всегда. Отмеченное оборудование будет использоваться в первую очередь.</p>
+   <div class="chips wrapchips" role="group" aria-label="Оборудование">${eqs}</div></section>
+  <section class="panel"><h2 class="h2">3. Время, минут</h2><div class="seg tm" role="group" aria-label="Время">${tms}</div></section>
+  <button class="btn primary full" style="min-height:54px" data-action="bgen">Подобрать тренировку</button>
+  ${res}`;
+}
+
 /* ---------- экраны ---------- */
 function vHome(){
   const d=new Date(), h=d.getHours();
@@ -1021,7 +1236,7 @@ function vWork(){
   const list=NAMES.filter(n=>S.filter==='Все'||WK[n].cat===S.filter);
   return `<header><h1 class="h1">Тренировки</h1><p class="dim" style="margin-top:6px">${NAMES.length} программ. ${loadLine()} Калории посчитаны для веса ${S.weight} кг.</p></header>
   <div class="chips" role="group" aria-label="Категория">${cats().map(c=>`<button class="chip" data-action="filter" data-arg="${c}" aria-pressed="${S.filter===c}">${c}</button>`).join('')}</div>
-  <div class="list">${list.map(n=>{const w=WK[n];return `<div class="wcard" role="button" tabindex="0" style="--c:${w.c}" data-action="open" data-arg="${n}">
+  <div class="list">${S.filter==='Все'?`<div class="wcard cons" role="button" tabindex="0" data-action="wbuild"><div class="txt"><div class="name">Конструктор тренировки</div><div class="tags"><span class="tag" style="--c:var(--accent)">Новое</span></div><p class="desc">Выбери мышцы на фигуре, оборудование и время. Приложение само подберёт упражнения.</p></div><div class="go"><button class="btn small primary" data-action="wbuild">Открыть</button></div></div>`:''}${list.map(n=>{const w=WK[n];return `<div class="wcard" role="button" tabindex="0" style="--c:${w.c}" data-action="open" data-arg="${n}">
     <div class="txt"><div class="name">${n}</div>${tags(n)}<p class="desc">${w.desc}</p></div>
     <div class="side">${body(wInt(n),w.c,false)}</div>
     <div class="go">${meta(n)}<button class="btn small primary" style="--c:${w.c}" data-action="start" data-arg="${n}">Старт</button></div></div>`}).join('')}</div>`;
@@ -1105,7 +1320,7 @@ function vNorm(){
    </div><button class="btn primary" data-action="calSave">Рассчитать</button></section>
   ${res}`;
 }
-function render(){const m=$('#main');m.innerHTML=({home:vHome,work:vWork,plan:vPlan,prog:vProg,cal:vCal})[S.tab]();renderNav();if(S.anim){m.classList.remove('anim');void m.offsetWidth;m.classList.add('anim');S.anim=false}animate(m)}
+function render(){const m=$('#main');m.classList.remove('anim');m.innerHTML=({home:vHome,work:()=>S.wsub==='build'?vBuild():vWork(),plan:vPlan,prog:vProg,cal:vCal})[S.tab]();renderNav();if(S.anim){m.classList.remove('anim');void m.offsetWidth;m.classList.add('anim');S.anim=false}animate(m)}
 
 /* ---------- анкета при входе ---------- */
 function openOnb(){
@@ -1180,10 +1395,10 @@ function openSheet(n){
   el.innerHTML=`<div class="wrap" style="--c:${w.c}"><div class="ov-head"><button class="icon-btn" data-action="closeSheet" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><div class="t">Описание</div></div>
   <div class="ov-body">
    <div style="display:flex;flex-direction:column;gap:10px"><h1 class="h1" style="color:${w.c}">${n}</h1>${tags(n)}<p class="dim">${w.desc}</p></div>
-   <div class="tiles num"><div class="tile"><b>${wMin(n)} мин</b><span>длительность</span></div><div class="tile" style="--c:var(--warn)"><b>~${wKcal(n)}</b><span>ккал при ${S.weight} кг</span></div><div class="tile"><b>${w.base.length}${w.ex.length>w.base.length?' × '+(w.ex.length/w.base.length):''}</b><span>${w.ex.length>w.base.length?'упражнений × кругов':'упражнений'}</span></div></div>
+   <div class="tiles num"><div class="tile"><b>${wMin(n)} мин</b><span>длительность</span></div><div class="tile" style="--c:var(--warn)"><b>~${wKcal(n)}</b><span>ккал при ${S.weight} кг</span></div><div class="tile"><b>${w.base.length}${rndOf(w)>1?' × '+rndOf(w):''}</b><span>${rndOf(w)>1?'упражнений × кругов':'упражнений'}</span></div></div>
    <section class="panel"><h2 class="h2">Какие мышцы работают</h2>${body(inten,w.c,true)}
     <div class="load">${wMus(n).map(m=>`<span>${MUSCLES[m]}</span><div class="bar"><i style="width:${Math.round(inten[m]*100)}%"></i></div>`).join('')}</div></section>
-   <section><h2 class="h2" style="margin-bottom:6px">Упражнения</h2>${w.ex.length>w.base.length?`<p class="hint" style="margin:0 0 6px">${loadLine()} Отдых между кругами — ${w.ex[w.base.length-1].r} с. Время и повторы ниже — для первого круга.</p>`:''}${w.ex.slice(0,w.base.length).map((e,i)=>`<div class="ex"><div class="n">${i+1}</div><div style="min-width:0"><b>${e.n}</b><div class="m num">${e.d} с${e.r?' · отдых '+e.r+' с':''} · ~${exK(w,e).toFixed(1)} ккал</div>${e.fig?`<div class="exfig">${pushFig(e.fig,e.lab)}</div>`:''}<p>${e.tb||e.t}</p>${e.m.length?`<div class="tags">${e.m.map(m=>`<span class="tag" style="--c:${w.c}">${MUSCLES[m]}</span>`).join('')}</div>`:''}</div></div>`).join('')}</section>
+   <section><h2 class="h2" style="margin-bottom:6px">Упражнения</h2>${rndOf(w)>1?`<p class="hint" style="margin:0 0 6px">${w.custom?'Все упражнения идут '+rndOf(w)+' круга(ов) подряд'+((w.pre||[]).length?', до этого разминка, после — растяжка.':'.'):loadLine()+' Отдых между кругами — '+w.ex[(w.pre||[]).length+w.base.length-1].r+' с.'} Список ниже — один круг.</p>`:''}${firstRound(w).map((e,i)=>`<div class="ex"><div class="n">${i+1}</div><div style="min-width:0"><b>${e.n}</b><div class="m num">${e.d} с${e.r?' · отдых '+e.r+' с':''} · ~${exK(w,e).toFixed(1)} ккал</div>${e.fig?`<div class="exfig">${pushFig(e.fig,e.lab)}</div>`:''}<p>${e.tb||e.t}</p>${vidTag(e)}${e.m.length||e.id?ytLink(e.n):''}${e.m.length?`<div class="tags">${e.m.map(m=>`<span class="tag" style="--c:${w.c}">${MUSCLES[m]}</span>`).join('')}</div>`:''}</div></div>`).join('')}</section>
   </div></div>
   <div class="actions" style="--c:${w.c}"><div class="in"><button class="btn" data-action="plan" data-arg="${n}">В план</button><button class="btn primary" data-action="start" data-arg="${n}">Начать тренировку</button></div></div>`;
   el.hidden=false;el.scrollTop=0;document.documentElement.style.overflow='hidden';
@@ -1219,7 +1434,7 @@ function renderTimer(){
      ${show.fig?`<div class="t-fig">${pushFig(show.fig,show.lab)}</div>`:''}
      <div class="t-map">${body(Object.fromEntries(show.m.map(m=>[m,1])),w.c,true)}</div>
      <div class="eyebrow" style="color:${w.c}">${show.m.map(m=>MUSCLES[m]).join(' · ')||'Расслабление'}</div>
-     <p class="dim" style="font-size:14px;max-width:360px">${show.t}</p>
+     <p class="dim" style="font-size:14px;max-width:360px">${show.t}</p>${vidTag(show)}${show.m.length||show.id?ytLink(show.n):''}
      ${T.phase!=='rest'&&T.i<n-1?`<div class="eyebrow">Далее: ${w.ex[T.i+1].n}</div>`:''}</div>`;
   }
   el.innerHTML=`<div class="wrap" style="--c:${w.c}">${head}${inner}${T.phase==='done'?`</div><div class="actions" style="--c:${w.c}"><div class="in"><button class="btn" data-action="shareRes">Поделиться</button><button class="btn primary" data-action="tClose">Готово</button></div></div><div>`:''}</div>`;
@@ -1282,9 +1497,16 @@ let toastT=null;
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200)}
 const A={
  themeToggle(){const t=THEME==='dark'?'light':'dark';store.set('skill.theme',t);applyTheme(t);render();renderSet();const b=document.querySelector('.sw[data-action="themeToggle"]');b&&b.focus()},
- tab(a){S.tab=a;S.anim=true;render();window.scrollTo(0,0)},
+ wbuild(){S.wsub='build';S.anim=true;render();window.scrollTo(0,0)},
+ wback(){S.wsub=null;S.anim=true;render();window.scrollTo(0,0)},
+ tab(a){S.wsub=null;S.tab=a;S.anim=true;render();window.scrollTo(0,0)},
  filter(a){S.filter=a;render()},
  open(a){openSheet(a)},
+ bmus(m){const a=S.build.sel,i=a.indexOf(m);i<0?a.push(m):a.splice(i,1);saveBuild();keepScroll()},
+ beq(k){const a=S.build.eq,i=a.indexOf(k);i<0?a.push(k):a.splice(i,1);saveBuild();keepScroll()},
+ btime(t){S.build.time=+t;saveBuild();keepScroll()},
+ bclear(){S.build.sel=[];saveBuild();keepScroll()},
+ bgen(){S.build.seed=(S.build.seed||0)+1;if(!genWorkout()){toast('Под такой выбор нет упражнений. Отметь больше оборудования или мышц');return}render();const r=$('#b-res');if(r)r.scrollIntoView({behavior:REDUCE?'auto':'smooth',block:'start'});toast('Тренировка готова')},
  closeSheet,
  start(a){startTimer(a)},
  plan(a){S.prefill=a;closeSheet();S.tab='plan';render();window.scrollTo(0,0)},
@@ -1374,7 +1596,7 @@ document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.tar
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.timer&&S.timer.running)takeWake()});
 applyTheme(store.get('skill.theme','dark'));
 checkAch();checkRemind();setInterval(checkRemind,30000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkRemind()});
-refreshNames();render();
+restoreGen();refreshNames();render();
 /* после заставки всегда открываем окно с данными (заполнено сохранёнными значениями) */
 if(document.getElementById('splash'))document.addEventListener('splashdone',openOnb,{once:true});else openOnb();
 })();
